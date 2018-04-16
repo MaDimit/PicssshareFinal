@@ -9,6 +9,7 @@ import java.io.IOException;
 public class NameServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //PHILIP TESTING HERE
         String name = NameManager.appendHello(request.getParameter("name"));
         request.setAttribute("name",name);
         request.getRequestDispatcher("hello.jsp").forward(request,response);
