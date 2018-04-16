@@ -7,7 +7,7 @@ import java.util.Objects;
 public class User {
 
     // User data
-    private long id;
+    private int id;
     private String username;
     private String password;
     private String firstName;
@@ -24,7 +24,7 @@ public class User {
     }
 
     //Used during creation from db
-    public User(long id, String username, String password, String firstName, String lastName, String email, String profilePicUrl) {
+    public User(int id, String username, String password, String firstName, String lastName, String email, String profilePicUrl) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -37,7 +37,7 @@ public class User {
     //========================== Setters ==========================//
 
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -60,7 +60,7 @@ public class User {
     //========================== Getters ==========================//
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 

@@ -1,4 +1,12 @@
 package model.dao;
 
-public class Dao {
+public abstract class Dao {
+
+    //Used for readability, not to call everytime DbManager.getInstance()
+    protected static DbManager dbManager;
+
+    protected Dao() {
+        dbManager = DbManager.getInstance();
+    }
+
 }
