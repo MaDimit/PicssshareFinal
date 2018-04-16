@@ -1,10 +1,7 @@
 package model.dao;
 
-//import controllers.managers.LoggingManager;
 import controllers.managers.LoggingManager;
 import model.pojo.User;
-
-import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,7 +10,6 @@ import java.util.Map;
 public class UserDao extends Dao {
 
     private static UserDao instance = new UserDao();
-
     // lazy singleton
     private UserDao() {
         super();
@@ -155,7 +151,8 @@ public class UserDao extends Dao {
             }
 
         }
-        String sql = "UPDATE users SET"+sb.toString()+" WHERE id = ?";
+        String sql = "UPDATE users SET "+sb.toString()+" WHERE id = ?";
+        System.out.println(sql);
 
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, u.getId());

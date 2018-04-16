@@ -55,9 +55,9 @@ class DbManager {
 //		this.SCHEMA = getProperty(Key.SCHEMA);
         this.PROPERTIES = null;
 
-        this.DB_URL = "jdbc:mysql://127.0.0.1:30249/picssshare?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        this.DB_URL = "jdbc:mysql://127.0.0.1:3306/picssshare?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         this.USER = "root";
-        this.PASS = "";
+        this.PASS = "root";
 
 
         this.SCHEMA = "picssshare";
@@ -65,8 +65,6 @@ class DbManager {
         try {
             Class.forName(JDBC_DRIVER);
             connection = DriverManager.getConnection(DB_URL,USER,PASS);
-
-            System.out.println(connection);
 
         } catch (ClassNotFoundException e) {
             System.err.println("Driver loading error.");
