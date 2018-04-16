@@ -115,14 +115,14 @@ public class LoggingManager {
     //=========================LOGGING=======================================//
 
     //Logging by username and password ----> //TODO: CHECK FOR RIGHT LOGIN IN THE SESSION
-//    public User login(String username, String password) throws LoggingException {
-//        User u = CollectionsManager.getInstance().getUser(username);
-//        if (u == null) {
-//            throw new LoggingException("Wrong username!");
-//        }
-//        if (!u.getPassword().equals(password)) {
-//            throw new LoggingException("Wrong password!");
-//        }
-//        return u;
-//    }
+    public User login(String username, String password) throws LoggingException, SQLException {
+        User user = UserDao.getInstance().login(username);
+        if (user == null) {
+            throw new LoggingException("Wrong username!");
+        }
+        if (!user.getPassword().equals(password)) {
+            throw new LoggingException("Wrong password!");
+        }
+        return user;
+    }
 }

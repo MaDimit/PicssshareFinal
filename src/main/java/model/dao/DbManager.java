@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 
-public class DbManager {
+class DbManager {
 
     //Keys used to access properties file
     public enum Key{
@@ -55,9 +55,9 @@ public class DbManager {
 //		this.SCHEMA = getProperty(Key.SCHEMA);
         this.PROPERTIES = null;
 
-        this.DB_URL = "jdbc:mysql://127.0.0.1:3306/picssshare";
+        this.DB_URL = "jdbc:mysql://127.0.0.1:30249/picssshare?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         this.USER = "root";
-        this.PASS = "root";
+        this.PASS = "";
 
 
         this.SCHEMA = "picssshare";

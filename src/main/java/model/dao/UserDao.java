@@ -28,7 +28,6 @@ public class UserDao extends Dao {
     }
 
     public boolean checkIfUsernameIsFree(String username) throws SQLException {
-        Connection conn = dbManager.getConnection();
         String sql = "SELECT users.username FROM users WHERE users.username = ?";
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         stmt.setString(1,username);
@@ -38,7 +37,6 @@ public class UserDao extends Dao {
     }
 
     public boolean checkIfEmailIsFree(String email) throws SQLException {
-        Connection conn = dbManager.getConnection();
         String sql = "SELECT users.username FROM users WHERE users.email = ?";
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         stmt.setString(1,email);
@@ -47,10 +45,27 @@ public class UserDao extends Dao {
         return resultSet.next();
     }
 
-
+    public User login(String username) throws SQLException{
+        String sql = "SELECT id, username, password,first_name,last_name,email,profile_picture_url FROM users WHERE users.username = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1,username);
+        ResultSet rs = stmt.executeQuery();
+        if(!rs.next()){
+            return null;
+        }
+        int id = rs.getInt("id");
+        String userName = rs.getString("username");
+        String password = rs.getString("password");
+        String firstname = rs.getString("first_name");
+        String lastname = rs.getString("last_name");
+        String email = rs.getString("email");
+        String profilePicUrl = rs.getString("profile_picture_url");
+        User user = new User(id,userName,password,firstname,lastname,email,profilePicUrl);
+        stmt.close();
+        return user;
+    }
 
     public void registerUser(User user) throws SQLException {
-        Connection conn = dbManager.getConnection();
 
         // Inserting into DB
         String sql = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
@@ -59,6 +74,7 @@ public class UserDao extends Dao {
         stmt.setString(2, user.getPassword());
         stmt.setString(3, user.getEmail());
         stmt.executeUpdate();
+        stmt.close();
 
         // Getting id for registered user
         ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -67,21 +83,30 @@ public class UserDao extends Dao {
         } else {
             throw new SQLException("Creating user failed, no ID obtained.");
         }
+
     }
 
-    public void addSubscription(User subscriber, User subscribed) throws SQLException {
-        Connection conn = dbManager.getConnection();
+    public void addSubscription(User subscriber, User subscribedTo) throws SQLException {
         String sql = "INSERT INTO subscriber_subscribed (subscriber_id, subscribedto_id) VALUES (?,?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, subscriber.getId());
-        stmt.setInt(2, subscribed.getId());
+        stmt.setInt(2, subscribedTo.getId());
         stmt.executeUpdate();
+        stmt.close();
+    }
+
+    public void deleteUser(User user) throws SQLException {
+        String sql = "DELETE FROM users WHERE id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,user.getId());
+        stmt.executeUpdate();
+        stmt.close();
     }
 
     // username and id should not be modified
     public void executeProfileUpdate(User u, String password, String first_name, String last_name, String email)
             throws SQLException, LoggingManager.RegistrationException {
-        Connection conn = dbManager.getConnection();
+        // TODO Exctract notnull validation to UserManager
         // Store in collection not null values, because the user could choose to change
         // different number of
         // information for his profile
@@ -130,16 +155,11 @@ public class UserDao extends Dao {
             }
 
         }
-        String sql = "UPDATE users SET "+sb.toString()+" WHERE id = ?";
+        String sql = "UPDATE users SET"+sb.toString()+" WHERE id = ?";
 
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, u.getId());
         stmt.executeUpdate();
-
-        // for next usages
-        commaCounter = 0;
-
+        stmt.close();
     }
-
-
 }
