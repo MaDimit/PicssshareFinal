@@ -57,6 +57,10 @@ public class User {
         this.email = email;
     }
 
+    public void setProfilePicUrl(String profilePicUrl) {
+        this.profilePicUrl = profilePicUrl;
+    }
+
     //========================== Getters ==========================//
 
 

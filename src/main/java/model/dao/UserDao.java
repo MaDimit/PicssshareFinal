@@ -23,7 +23,7 @@ public class UserDao extends Dao {
         return instance;
     }
 
-    public boolean checkIfUsernameIsFree(String username) throws SQLException {
+    public boolean checkIfUsernameIsTaken(String username) throws SQLException {
         String sql = "SELECT users.username FROM users WHERE users.username = ?";
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         stmt.setString(1,username);
@@ -32,7 +32,7 @@ public class UserDao extends Dao {
         return resultSet.next();
     }
 
-    public boolean checkIfEmailIsFree(String email) throws SQLException {
+    public boolean checkIfEmailIsTaken(String email) throws SQLException {
         String sql = "SELECT users.username FROM users WHERE users.email = ?";
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         stmt.setString(1,email);
@@ -100,7 +100,7 @@ public class UserDao extends Dao {
     }
 
     // username and id should not be modified
-    public void executeProfileUpdate(User u, String password, String first_name, String last_name, String email)
+    public void executeProfileUpdate(User u, String password, String first_name, String last_name, String email, String profilePicURL)
             throws SQLException, LoggingManager.RegistrationException {
         // TODO Exctract notnull validation to UserManager
         // Store in collection not null values, because the user could choose to change
@@ -132,11 +132,16 @@ public class UserDao extends Dao {
         if (!email.equalsIgnoreCase(u.getEmail())) {
             // check the existing ones and if there is not such an email - set it
             if(LoggingManager.getInstance().validateEmailAddress(email)) {
-                if (!UserDao.getInstance().checkIfEmailIsFree(email))
+                if (!UserDao.getInstance().checkIfEmailIsTaken(email))
                     notNullValues.put("email", email);
                 u.setEmail(email);
             }
         }
+        if (!profilePicURL.equalsIgnoreCase(u.getProfilePicUrl())) {
+                notNullValues.put("profilePicURL", profilePicURL);
+                u.setProfilePicUrl(profilePicURL);
+        }
+
         StringBuilder sb = new StringBuilder();
         // comma count is used for placing commas between set statements
         int commaCounter = 0;

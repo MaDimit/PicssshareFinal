@@ -68,7 +68,7 @@ public class LoggingManager {
         if (!username.matches("^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$")) {
             throw new RegistrationException("Invalid characters in username!");
         }
-        if (UserDao.getInstance().checkIfUsernameIsFree(username)) {
+        if (UserDao.getInstance().checkIfUsernameIsTaken(username)) {
             throw new RegistrationException("User with this name already exists!");
         }
         return true;
@@ -103,7 +103,7 @@ public class LoggingManager {
         java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
         java.util.regex.Matcher m = p.matcher(email);
 
-        if (UserDao.getInstance().checkIfEmailIsFree(email)) {
+        if (UserDao.getInstance().checkIfEmailIsTaken(email)) {
             throw new RegistrationException("User with this email already exists");
         }
 

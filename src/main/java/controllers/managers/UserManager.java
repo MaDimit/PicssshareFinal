@@ -33,9 +33,9 @@ public class UserManager {
         userDao.addSubscription(subscriber,subscribedTo);
     }
 
-    public void updateProfileInfo(User user, String password, String first_name, String last_name, String email) throws SQLException, LoggingManager.RegistrationException {
+    public void updateProfileInfo(User user, String password, String first_name, String last_name, String email, String profilePicURL) throws SQLException, LoggingManager.RegistrationException {
         //TODO add not null validation here instead of UserDao
-       userDao.executeProfileUpdate(user,password,first_name,last_name,email);
+       userDao.executeProfileUpdate(user,password,first_name,last_name,email, profilePicURL);
     }
 
     public void deleteUser(User user) throws SQLException{
