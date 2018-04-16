@@ -15,31 +15,8 @@ public class User {
     private String email;
     private String profilePicUrl;
 
-    // User collections, fetching from DB by id during runtime
-    private List<Integer> subscribedTo;
-    private List<Integer> subscribers;
-    private List<Integer> posts;
-    private List<Integer> notifications;
-    private List<Integer> albums;
-    private List<Integer> likes;
-    private List<Integer> dislikes;
-    private List<Integer> commentLikes;
-
-    //Empty collections for newly registered user
-    private User(){
-        this.subscribedTo = new ArrayList<>();
-        this.subscribers = new ArrayList<>();
-        this.posts = new ArrayList<>();
-        this.notifications = new ArrayList<>();
-        this.albums = new ArrayList<>();
-        this.likes = new ArrayList<>();
-        this.dislikes = new ArrayList<>();
-        this.commentLikes = new ArrayList<>();
-    }
-
     // Used during registration
     public User(String username,String password,String email){
-        this();
         this.username = username;
         this.password = password;
         this.email = email;
@@ -57,43 +34,13 @@ public class User {
         this.profilePicUrl = profilePicUrl;
     }
 
-    //========================== Adding to collcetions ==========================//
-
-    public void addSubscribedTo(int userId){
-        this.subscribedTo.add(userId);
-    }
-
-    public void addSubscriber(int userId){
-        this.subscribers.add(userId);
-    }
-
-    public void addPost(int postId){
-        this.posts.add(postId);
-    }
-
-    public void addNotification(int notificationId){
-        this.notifications.add(notificationId);
-    }
-
-    public void addAlbum(int albumId){
-        this.albums.add(albumId);
-    }
-
-    public void addLike(int postId){
-        this.likes.add(postId);
-    }
-
-    public void addDislike(int postId){
-        this.dislikes.add(postId);
-    }
-
-    public void addCommentLike(int commentLikeId){
-        this.commentLikes.add(commentLikeId);
-    }
-
     //========================== Setters ==========================//
 
-    //Setters for user data that can be changed
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setPassword(String password) {
         this.password = password;
     }
@@ -108,39 +55,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    //Setters for user collection. Used during creation of user from DB
-    public void setSubscribedTo(List<Integer> subscribedTo) {
-        this.subscribedTo = subscribedTo;
-    }
-
-    public void setSubscribers(List<Integer> subscribers) {
-        this.subscribers = subscribers;
-    }
-
-    public void setPosts(List<Integer> posts) {
-        this.posts = posts;
-    }
-
-    public void setNotifications(List<Integer> notifications) {
-        this.notifications = notifications;
-    }
-
-    public void setAlbums(List<Integer> albums) {
-        this.albums = albums;
-    }
-
-    public void setLikes(List<Integer> likes) {
-        this.likes = likes;
-    }
-
-    public void setDislikes(List<Integer> dislikes) {
-        this.dislikes = dislikes;
-    }
-
-    public void setCommentLikes(List<Integer> commentLikes){
-        this.commentLikes = commentLikes;
     }
 
     //========================== Getters ==========================//
@@ -172,38 +86,6 @@ public class User {
 
     public String getProfilePicUrl() {
         return profilePicUrl;
-    }
-
-    public List<Integer> getSubscribedTo() {
-        return subscribedTo;
-    }
-
-    public List<Integer> getSubscribers() {
-        return subscribers;
-    }
-
-    public List<Integer> getPosts() {
-        return posts;
-    }
-
-    public List<Integer> getNotifications() {
-        return notifications;
-    }
-
-    public List<Integer> getAlbums() {
-        return albums;
-    }
-
-    public List<Integer> getLikes() {
-        return likes;
-    }
-
-    public List<Integer> getDislikes() {
-        return dislikes;
-    }
-
-    public List<Integer> getCommentLikes(){
-        return commentLikes;
     }
 
     //========================== Object methods ==========================//
