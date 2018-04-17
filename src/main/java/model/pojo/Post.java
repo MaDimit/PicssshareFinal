@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Post implements Comparable<Post>{
+public class Post implements Comparable<Post> {
 
     private int id;
     private int likes;
@@ -18,7 +18,7 @@ public class Post implements Comparable<Post>{
     private List<User> dislikers;
 
     //Post creation from DB
-    public Post(int id, User poster, String url, int likes, int dislikes, LocalDateTime date, List<String> tags, List<Comment> comments, List<User> likers, List<User> dislikers){
+    public Post(int id, User poster, String url, int likes, int dislikes, LocalDateTime date, List<String> tags, List<Comment> comments, List<User> likers, List<User> dislikers) {
         this.id = id;
         this.poster = poster;
         this.url = url;
@@ -32,7 +32,7 @@ public class Post implements Comparable<Post>{
     }
 
     //New Post creation
-    public Post(User user, String url ){
+    public Post(User user, String url) {
         this.poster = user;
         this.url = url;
         this.date = LocalDateTime.now();
@@ -44,22 +44,19 @@ public class Post implements Comparable<Post>{
         this.dislikers = new ArrayList<>();
     }
 
-    public void addLike(){
+    public void addLike(int value) {
         synchronized (this) {
-            likes++;
+            likes += value;
         }
     }
 
-    public void addDislike(){
-        synchronized (this) {
-            likes--;
-        }
+    public void addDislike(int value) {
+        dislikes += value;
     }
 
-    public void addTag(String tag){
-        synchronized (this) {
-            this.tags.add(tag);
-        }
+    public void addTag(String tag) {
+        this.tags.add(tag);
+
     }
 
     public void removeTag(String tag) {
@@ -68,7 +65,7 @@ public class Post implements Comparable<Post>{
         }
     }
 
-    public void addComment(Comment c){
+    public void addComment(Comment c) {
         synchronized (this) {
             this.comments.add(c);
         }

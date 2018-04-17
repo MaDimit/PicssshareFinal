@@ -170,6 +170,9 @@ public class PostDao extends Dao {
                 postsStmt.setInt(3, post.getId());
                 postsStmt.executeUpdate();
 
+                post.addLike(like);
+                post.addDislike(dislike);
+
                 likerPostStmt.close();
                 postsStmt.close();
 
