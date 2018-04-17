@@ -16,10 +16,7 @@ public class UserDao extends Dao {
     }
 
     // singleton instance used in usermanager
-    public static synchronized UserDao getInstance() {
-        if (instance == null) {
-            instance = new UserDao();
-        }
+    public static UserDao getInstance() {
         return instance;
     }
 
@@ -87,7 +84,6 @@ public class UserDao extends Dao {
         stmt.setString(2, user.getPassword());
         stmt.setString(3, user.getEmail());
         stmt.executeUpdate();
-        stmt.close();
 
         // Getting id for registered user
         ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -96,7 +92,7 @@ public class UserDao extends Dao {
         } else {
             throw new SQLException("Creating user failed, no ID obtained.");
         }
-
+        stmt.close();
     }
 
     public void addSubscription(User subscriber, User subscribedTo) throws SQLException {

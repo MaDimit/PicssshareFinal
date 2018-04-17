@@ -52,6 +52,7 @@ public class LoggingManager {
             UserDao.getInstance().registerUser(user);
         } catch (SQLException e) {
             System.out.println("Registering to DB problem: " + e.getMessage());
+            e.printStackTrace();
             throw new RegistrationException("Data base connection problem!");
         }
 
