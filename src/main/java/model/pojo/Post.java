@@ -6,56 +6,77 @@ import java.util.List;
 
 public class Post implements Comparable<Post>{
 
-    private long id;
+    private int id;
     private int likes;
-    private int dislikes;
     private LocalDateTime date;
-    private User user;
+    private User poster;
     private String url;
     private List<String> tags;
+    private List<Comment> comments;
+    private List<User> likers;
 
     //Post creation from DB
-    public Post(long id, User user, String url, int likes, int dislikes, LocalDateTime date, List<String> tags){
+    public Post(int id, User poster, String url, int likes, LocalDateTime date, List<String> tags, List<Comment> comments, List<User> likers){
         this.id = id;
-        this.user = user;
+        this.poster = poster;
         this.url = url;
         this.likes = likes;
-        this.dislikes = dislikes;
         this.date = date;
         this.tags = tags;
+        this.comments = comments;
+        this.likers = likers;
     }
 
     //New Post creation
     public Post(User user, String url ){
-        this.user = user;
+        this.poster = user;
         this.url = url;
         this.date = LocalDateTime.now();
         this.likes = 0;
-        this.dislikes = 0;
         this.tags = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.likers = new ArrayList<>();
     }
 
     public void addLike(){
-        likes++;
+        synchronized (this) {
+            likes++;
+        }
     }
 
     public void addDislike(){
-        dislikes++;
+        synchronized (this) {
+            likes--;
+        }
     }
 
     public void addTag(String tag){
-        this.tags.add(tag);
+        synchronized (this) {
+            this.tags.add(tag);
+        }
+    }
+
+    public void removeTag(String tag) {
+        synchronized (this) {
+            this.tags.remove(tag);
+        }
+    }
+
+    public void addComment(Comment c){
+        synchronized (this) {
+            this.comments.add(c);
+        }
     }
 
     //========================== Setters ==========================//
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     //========================== Getters ==========================//
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -63,16 +84,12 @@ public class Post implements Comparable<Post>{
         return likes;
     }
 
-    public int getDislikes() {
-        return dislikes;
-    }
-
     public LocalDateTime getDate() {
         return date;
     }
 
-    public User getUser() {
-        return user;
+    public User getPoster() {
+        return poster;
     }
 
     public String getUrl() {
@@ -83,8 +100,26 @@ public class Post implements Comparable<Post>{
         return tags;
     }
 
+    public List<Comment> getComments() {
+        return comments;
+    }
+
     @Override
     public int compareTo(Post post) {
         return this.date.compareTo(post.date) > 0 ? -1 : 1;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", likes=" + likes +
+                ", date=" + date +
+                ", poster=" + poster +
+                ", url='" + url + '\'' +
+                ", tags=" + tags +
+                ", comments=" + comments +
+                ", likers=" + likers +
+                '}';
     }
 }

@@ -23,6 +23,23 @@ public class UserDao extends Dao {
         return instance;
     }
 
+    public User getUserByID(int id) throws SQLException {
+        String sql = "SELECT  users.username, users.password, users.first_name, users.last_name, users.email, users.profile_picture_url FROM users WHERE users.id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,id);
+        ResultSet resultSet = stmt.executeQuery();
+        if(resultSet.next()) {
+            String username = resultSet.getString(1);
+            String password = resultSet.getString(2);
+            String firstName = resultSet.getString(3);
+            String lastName = resultSet.getString(4);
+            String email = resultSet.getString(5);
+            String profilePictureUrl = resultSet.getString(6);
+            return new User (id, username, password, firstName, lastName, email, profilePictureUrl);
+        }
+        return null;
+    }
+
     public boolean checkIfUsernameIsTaken(String username) throws SQLException {
         String sql = "SELECT users.username FROM users WHERE users.username = ?";
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

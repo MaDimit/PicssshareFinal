@@ -2,9 +2,11 @@ package controllers.managers;
 
 import model.dao.UserDao;
 import model.pojo.Notification;
+import model.pojo.Post;
 import model.pojo.User;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class UserManager {
 
@@ -41,4 +43,6 @@ public class UserManager {
     public void deleteUser(User user) throws SQLException{
         userDao.deleteUser(user);
     }
+
+
 }

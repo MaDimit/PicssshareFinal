@@ -1,10 +1,11 @@
 package model.pojo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Comment implements Comparable<Comment>{
 
-    private long id;
+    private int id;
     private Post post;
     private User user;
     private LocalDateTime date;
@@ -12,13 +13,12 @@ public class Comment implements Comparable<Comment>{
     private int likes;
 
     //Creating comment from DB
-    public Comment(long id, Post post, User user, LocalDateTime date, String content, int likes){
+    public Comment(int id, Post post, User user, LocalDateTime date, String content){
         this.id = id;
         this.post = post;
         this.user = user;
         this.date = date;
         this.content = content;
-        this.likes = likes;
     }
 
     //Creating new comment
@@ -40,13 +40,17 @@ public class Comment implements Comparable<Comment>{
 
     //========================== Setters ==========================//
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
     }
 
     //========================== Getters ==========================//
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
