@@ -5,6 +5,7 @@ import model.pojo.Album;
 import model.pojo.User;
 import java.sql.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -76,6 +77,17 @@ public class UserDao extends Dao {
         stmt.setInt(1,user.getId());
         stmt.executeUpdate();
         stmt.close();
+    }
+
+    public HashSet<String> getSubscriptions() throws SQLException{
+        HashSet<String> subscriptions = new HashSet<>();
+        String sql = "SELECT subscriber_id, subscribedto_id FROM subscriber_subscribed";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+        while(rs.next()){
+            subscriptions.add(rs.getInt("subscriber_id") + "" + rs.getInt("subscribedto_id"));
+        }
+        return subscriptions;
     }
 
     // username and id should not be modified
