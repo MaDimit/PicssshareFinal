@@ -3,6 +3,7 @@ package model.pojo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Post implements Comparable<Post> {
 
@@ -138,6 +139,23 @@ public class Post implements Comparable<Post> {
     @Override
     public int compareTo(Post post) {
         return this.date.compareTo(post.date) > 0 ? -1 : 1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id == post.id &&
+                Objects.equals(date, post.date) &&
+                Objects.equals(poster, post.poster) &&
+                Objects.equals(url, post.url);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, date, poster, url);
     }
 
     @Override

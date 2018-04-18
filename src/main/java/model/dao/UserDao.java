@@ -4,6 +4,7 @@ import controllers.managers.LoggingManager;
 import model.pojo.Album;
 import model.pojo.User;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,6 +24,20 @@ public class UserDao extends Dao {
     }
 
     //================== User Interface ==================//
+
+    //used for search
+    public ArrayList<User> getAllUsersByPattern(String pattern) throws SQLException {
+        ArrayList<User> matchingUsers = new ArrayList<>();
+        String sql = "SELECT id FROM users WHERE UPPER(username) LIKE UPPER('%"+pattern+"%') ORDER BY username;";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+      //  stmt.setString(1,pattern);
+        ResultSet resultSet = stmt.executeQuery();
+        while(resultSet.next()) {
+            int userID = resultSet.getInt("id");
+            matchingUsers.add(getUserByID(userID));
+        }
+        return matchingUsers;
+    }
 
     public User getUserByID(int id) throws SQLException {
         String sql = "SELECT id, username, password, first_name, last_name, email, profile_picture_url FROM users WHERE users.id = ?";

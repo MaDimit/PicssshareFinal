@@ -248,4 +248,25 @@ public class PostDao extends Dao {
         return users;
     }
 
+    //hashset used for putting unique posts only in result collection
+    public HashSet<Post> getPostsByTags(ArrayList<String> tags) throws SQLException {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < tags.size(); i++) {
+            sb.append("UPPER('%"+tags.get(i)+"%') ");
+            if(i!=tags.size()-1){
+                sb.append("OR tag_name LIKE ");
+            }
+        }
+        HashSet<Post> matchingPosts = new HashSet<>();
+        String sql = "SELECT post_id FROM post_tag WHERE tag_id IN ( SELECT id FROM tags WHERE UPPER(tag_name)" +
+                " LIKE "+sb.toString()+");";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        ResultSet resultSet = stmt.executeQuery();
+        while(resultSet.next()) {
+            int postID = resultSet.getInt("post_id");
+            matchingPosts.add(getPost(postID));
+        }
+        return matchingPosts;
+    }
+
 }
