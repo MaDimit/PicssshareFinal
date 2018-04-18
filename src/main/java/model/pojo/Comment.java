@@ -31,11 +31,15 @@ public class Comment implements Comparable<Comment>{
     }
 
     public void addLike(){
-        likes++;
+        synchronized (this) {
+            likes++;
+        }
     }
 
     public void removeLike(){
-        likes--;
+        synchronized (this) {
+            likes--;
+        }
     }
 
     //========================== Setters ==========================//
