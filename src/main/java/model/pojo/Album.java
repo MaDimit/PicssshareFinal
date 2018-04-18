@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Album {
 
-    private long id;
+    private int id;
     private User user;
     private String name;
     private List<Post> posts;
@@ -17,8 +17,15 @@ public class Album {
         this.posts = new ArrayList<>();
     }
 
+    public Album(User user, String name, int id){
+        this.id = id;
+        this.user = user;
+        this.name = name;
+        this.posts = new ArrayList<>();
+    }
+
     //Creating album from DB
-    public Album(long id, User user, String name, List<Post> posts) {
+    public Album(int id, User user, String name, List<Post> posts) {
         this.id = id;
         this.user = user;
         this.name = name;
@@ -31,19 +38,23 @@ public class Album {
 
     //========================== Setters ==========================//
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
     //========================== Getters ==========================//
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
     public User getUser() {
         return user;
+    }
+
+    public int getUserID(){
+        return user.getId();
     }
 
     public String getName() {

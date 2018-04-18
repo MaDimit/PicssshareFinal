@@ -1,6 +1,7 @@
 package model.pojo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ public class User {
     private String lastName;
     private String email;
     private String profilePicUrl;
+    private HashMap<Integer, Album> albums;
 
     // Used during registration
     public User(String username,String password,String email){
@@ -21,6 +23,7 @@ public class User {
         this.password = password;
         this.email = email;
        // this.profilePicUrl = TODO Default profile picture;
+        this.albums = new HashMap<>();
     }
 
     //Used during creation from db
@@ -32,6 +35,9 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.profilePicUrl = profilePicUrl;
+
+        this.albums = new HashMap<>();
+
     }
 
     //========================== Setters ==========================//
@@ -59,6 +65,10 @@ public class User {
 
     public void setProfilePicUrl(String profilePicUrl) {
         this.profilePicUrl = profilePicUrl;
+    }
+
+    public void setAlbums(HashMap<Integer, Album> albums) {
+        this.albums = albums;
     }
 
     //========================== Getters ==========================//
@@ -92,7 +102,21 @@ public class User {
         return profilePicUrl;
     }
 
+    public HashMap<Integer, Album> getAlbums() {
+        return albums;
+    }
+
     //========================== Object methods ==========================//
+
+    public void addAlbum(Album album){
+        if(album!=null){
+            this.albums.put(album.getId(), album);
+        }
+    }
+
+    public Album getAlbumByID(int id){
+        return this.albums.get(id);
+    }
 
     // equality by username
     @Override
