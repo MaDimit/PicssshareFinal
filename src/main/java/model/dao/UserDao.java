@@ -127,6 +127,15 @@ public class UserDao extends Dao {
         stmt.close();
     }
 
+    public void removeSubscription(User subscriber, User subscribedTo) throws SQLException{
+        String sql = "DELETE FROM subscriber_subscribed WHERE subscriber_id = ? AND subscribedto_id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, subscriber.getId());
+        stmt.setInt(2, subscribedTo.getId());
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
     public void deleteUser(User user) throws SQLException {
         String sql = "DELETE FROM users WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);

@@ -97,6 +97,7 @@ public class PostDao extends Dao {
         stmt.setInt(1, id);
         ResultSet rs = stmt.executeQuery();
         Post post = rs.next() ? createPost(rs) : null;
+        stmt.close();
         return post;
     }
 
@@ -146,6 +147,7 @@ public class PostDao extends Dao {
         while (rs.next()){
             posts.add(createPost(rs));
         }
+        stmt.close();
         return posts;
     }
 
@@ -160,6 +162,7 @@ public class PostDao extends Dao {
         while (rs.next()){
             posts.add(createPost(rs));
         }
+        stmt.close();
         return posts;
     }
 
@@ -172,6 +175,7 @@ public class PostDao extends Dao {
         while(rs.next()){
             posts.add(createPost(rs));
         }
+        stmt.close();
         return posts;
     }
 
