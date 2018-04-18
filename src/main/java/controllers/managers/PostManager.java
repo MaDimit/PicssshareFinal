@@ -25,7 +25,7 @@ public class PostManager {
         this.postDao = PostDao.getInstance();
         try{
             this.cachedlikes = postDao.getAllLikers();
-            this.cachedlikes = postDao.getAllDislikers();
+            this.cachedDislikes = postDao.getAllDislikers();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -65,12 +65,16 @@ public class PostManager {
     //================= liking/disliking =================//
 
     public boolean likePost(Post post, User user) throws PostException{
-        if(cachedlikes.contains(user.getId() + "" + post.getId())){
+        String likerPost = user.getId() + "" + post.getId();
+        if(cachedlikes.contains(likerPost)){
             return false;
         }
         try{
             postDao.addLike(post, user);
-            cachedlikes.add(user.getId() + "" + post.getId());
+            cachedlikes.add(likerPost);
+            if(cachedDislikes.contains(likerPost)){
+                cachedDislikes.remove(likerPost);
+            }
         }catch (SQLException e){
             throw new PostException("Problem during like adding");
         }
@@ -78,12 +82,16 @@ public class PostManager {
     }
 
     public boolean dislikePost(Post post, User user) throws PostException{
-        if(cachedDislikes.contains(user.getId() + "" + post.getId())){
+        String likerPost = user.getId() + "" + post.getId();
+        if(cachedDislikes.contains(likerPost)){
             return false;
         }
         try{
             postDao.addDislike(post, user);
-            cachedDislikes.add(user.getId() + "" + post.getId());
+            cachedDislikes.add(likerPost);
+            if(cachedlikes.contains(likerPost)){
+                cachedlikes.remove(likerPost);
+            }
         }catch (SQLException e){
             throw new PostException("Problem during dislike adding");
         }
