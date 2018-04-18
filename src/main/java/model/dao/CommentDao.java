@@ -41,18 +41,18 @@ public class CommentDao extends Dao {
         stmt.close();
     }
 
-    public void deleteComment(Comment comment) throws SQLException {
+    public void deleteComment(int commentID) throws SQLException {
         String sql = "DELETE FROM comments WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, comment.getId());
+        stmt.setInt(1, commentID);
         stmt.executeUpdate();
         stmt.close();
     }
 
-    public void addLike(Comment comment) throws SQLException {
+    public void addLike(Comment comment, User liker) throws SQLException {
         String sql = "INSERT INTO liker_comment (comment_liker_id, liked_comment_id) VALUES (?,?)";
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, comment.getUser().getId());
+        stmt.setInt(1, liker.getId());
         stmt.setInt(2, comment.getId());
         stmt.executeUpdate();
         stmt.close();

@@ -32,12 +32,17 @@ public class Demo {
           //  AlbumManager.deleteAlbum(99);
         try{
             User u = LoggingManager.getInstance().login("Phillip", "Pass112233");
-           CommentManager.getInstance().editComment(12, "new edit");
+          // CommentManager.getInstance().editComment(12, "new edit");
+//            CommentManager.getInstance().editComment(14, "last edit check");
+//            CommentManager.getInstance().likeComment(27, 2);
+//            CommentManager.getInstance().deleteComment(32);
+//            Comment c = new Comment(PostDao.getInstance().getPost(5), u, "NEW COMent");
+//            CommentManager.getInstance().addComment(c);
         } catch (LoggingManager.LoggingException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (PostManager.PostException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
