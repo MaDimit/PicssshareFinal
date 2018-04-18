@@ -46,26 +46,6 @@ public class PostDao extends Dao {
 //    }
 //
 //
-//    public void setCommentLikesCount(int postID) throws SQLException {
-//        //Fetching users from DB
-//        String sql = "SELECT liked_comment_id, COUNT(comment_liker_id) FROM picssshare.liker_comment \n" +
-//                "JOIN comments ON comments.id = liked_comment_id\n" +
-//                "JOIN posts on posts.id=comments.post_id\n" +
-//                "WHERE posts.id = ?\n" +
-//                "GROUP BY liked_comment_id;\n";
-//        PreparedStatement stmt = conn.prepareStatement(sql);
-//        stmt.setInt(1, postID);
-//        ResultSet rs = stmt.executeQuery();
-//        if (rs.next()) {
-//            while (rs.next()) {
-//                int likedCommentId = rs.getInt("liked_comment_id");
-//                int commentsLikesCount = rs.getInt("liked_comment_id");
-//
-//                posts.get(postID).getComments().get(likedCommentId).setLikes(commentsLikesCount);
-//            }
-//        }
-//        stmt.close();
-//    }
 
 
     //================== Posts Interface ==================//
@@ -202,7 +182,7 @@ public class PostDao extends Dao {
     //================== Post creation ==================//
 
     // Used in post creation for getPost, and feed. Should be added to while loop or used once with rs.next;
-    private Post createPost(ResultSet rs) throws SQLException {
+    Post createPost(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         User user = UserDao.getInstance().getUserByID(rs.getInt("poster_id"));
         String url = rs.getString("url");
@@ -211,7 +191,7 @@ public class PostDao extends Dao {
         //add all the info for the post
         Post post = new Post(id, user, url, date);
         post.setTags(getAllTagsForPost(post));
-        post.setComments(getAllComments(post));
+        post.setComments(CommentDao.getInstance().getAllComments(post));
         post.setLikers(getPostLikers(post));
         post.setDislikers(getPostDislikers(post));
         return post;
@@ -264,25 +244,6 @@ public class PostDao extends Dao {
         }
         stmt.close();
         return users;
-    }
-
-    private List<Comment> getAllComments(Post post) throws SQLException {
-        ArrayList<Comment> comments = new ArrayList<>();
-        //Fetching users from DB
-        String sql = "SELECT id, poster_id, date, content, post_id FROM comments WHERE post_id=? ORDER BY date DESC";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, post.getId());
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            int commentId = rs.getInt("id");
-            int posterId = rs.getInt("poster_id");
-            LocalDateTime postDate = rs.getTimestamp("date").toLocalDateTime();
-            String content = rs.getString("content");
-            Comment c = new Comment(commentId, post, UserDao.getInstance().getUserByID(posterId), postDate, content);
-            comments.add(c);
-        }
-        stmt.close();
-        return comments;
     }
 
 }

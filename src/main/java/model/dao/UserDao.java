@@ -22,19 +22,24 @@ public class UserDao extends Dao {
         return instance;
     }
 
+    User createUser(ResultSet rs) throws SQLException{
+        int id = rs.getInt("id");
+        String username = rs.getString("username");
+        String password = rs.getString("password");
+        String firstname = rs.getString("first_name");
+        String lastname = rs.getString("last_name");
+        String email = rs.getString("email");
+        String profilePicUrl = rs.getString("profile_picture_url");
+        return new User (id, username, password, firstname, lastname, email, profilePicUrl);
+    }
+
     public User getUserByID(int id) throws SQLException {
-        String sql = "SELECT  users.username, users.password, users.first_name, users.last_name, users.email, users.profile_picture_url FROM users WHERE users.id = ?";
+        String sql = "SELECT id, username, password, first_name, last_name, email, profile_picture_url FROM users WHERE users.id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1,id);
         ResultSet resultSet = stmt.executeQuery();
         if(resultSet.next()) {
-            String username = resultSet.getString(1);
-            String password = resultSet.getString(2);
-            String firstName = resultSet.getString(3);
-            String lastName = resultSet.getString(4);
-            String email = resultSet.getString(5);
-            String profilePictureUrl = resultSet.getString(6);
-            return new User (id, username, password, firstName, lastName, email, profilePictureUrl);
+           return createUser(resultSet);
         }
         return null;
     }
@@ -67,13 +72,7 @@ public class UserDao extends Dao {
             return null;
         }
         int id = rs.getInt("id");
-        String userName = rs.getString("username");
-        String password = rs.getString("password");
-        String firstname = rs.getString("first_name");
-        String lastname = rs.getString("last_name");
-        String email = rs.getString("email");
-        String profilePicUrl = rs.getString("profile_picture_url");
-        User user = new User(id,userName,password,firstname,lastname,email,profilePicUrl);
+        User user = createUser(rs);
         loadUsersAlbums(user);
         stmt.close();
         return user;
