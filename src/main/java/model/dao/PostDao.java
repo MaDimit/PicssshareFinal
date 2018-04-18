@@ -12,19 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PostDao extends Dao {
-    //test
-//    public static void main(String[] args) {
-//        try {
-//            PostDao.getInstance().loadAllPosts();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        for(Post p : posts.values()){
-//            System.out.println(p);
-//        }
-//    }
 
-    private HashMap<Integer, Post> posts;
+//    private HashMap<Integer, Post> posts;
     private static PostDao instance = new PostDao();
 
     // singleton instance used in commentmanager
@@ -34,47 +23,47 @@ public class PostDao extends Dao {
 
     private PostDao() {
         super();
-        this.posts = new HashMap<>();
+//        this.posts = new HashMap<>();
     }
 
-    public HashMap<Integer, Post> getPosts() {
-        return posts;
-    }
-
-    //method for fill the collection with posts and all the information about them
-    public void loadAllPosts() throws SQLException {
-        String sql = "SELECT id,date,poster_id,url FROM posts";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            Post p = createPost(rs);
-            this.posts.put(p.getId(), p);
-        }
-        stmt.close();
-
-    }
-
-
-    public void setCommentLikesCount(int postID) throws SQLException {
-        //Fetching users from DB
-        String sql = "SELECT liked_comment_id, COUNT(comment_liker_id) FROM picssshare.liker_comment \n" +
-                "JOIN comments ON comments.id = liked_comment_id\n" +
-                "JOIN posts on posts.id=comments.post_id\n" +
-                "WHERE posts.id = ?\n" +
-                "GROUP BY liked_comment_id;\n";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, postID);
-        ResultSet rs = stmt.executeQuery();
-        if (rs.next()) {
-            while (rs.next()) {
-                int likedCommentId = rs.getInt("liked_comment_id");
-                int commentsLikesCount = rs.getInt("liked_comment_id");
-
-                posts.get(postID).getComments().get(likedCommentId).setLikes(commentsLikesCount);
-            }
-        }
-        stmt.close();
-    }
+//    public HashMap<Integer, Post> getPosts() {
+//        return posts;
+//    }
+//
+//    //method for fill the collection with posts and all the information about them
+//    public void loadAllPosts() throws SQLException {
+//        String sql = "SELECT id,date,poster_id,url FROM posts";
+//        PreparedStatement stmt = conn.prepareStatement(sql);
+//        ResultSet rs = stmt.executeQuery();
+//        while (rs.next()) {
+//            Post p = createPost(rs);
+//            this.posts.put(p.getId(), p);
+//        }
+//        stmt.close();
+//
+//    }
+//
+//
+//    public void setCommentLikesCount(int postID) throws SQLException {
+//        //Fetching users from DB
+//        String sql = "SELECT liked_comment_id, COUNT(comment_liker_id) FROM picssshare.liker_comment \n" +
+//                "JOIN comments ON comments.id = liked_comment_id\n" +
+//                "JOIN posts on posts.id=comments.post_id\n" +
+//                "WHERE posts.id = ?\n" +
+//                "GROUP BY liked_comment_id;\n";
+//        PreparedStatement stmt = conn.prepareStatement(sql);
+//        stmt.setInt(1, postID);
+//        ResultSet rs = stmt.executeQuery();
+//        if (rs.next()) {
+//            while (rs.next()) {
+//                int likedCommentId = rs.getInt("liked_comment_id");
+//                int commentsLikesCount = rs.getInt("liked_comment_id");
+//
+//                posts.get(postID).getComments().get(likedCommentId).setLikes(commentsLikesCount);
+//            }
+//        }
+//        stmt.close();
+//    }
 
 
     //================== Posts Interface ==================//
@@ -161,43 +150,6 @@ public class PostDao extends Dao {
         return null;
     }
 
-    //------------------ comment manipulations ------------------//
-
-    public void addComment(Comment comment) throws SQLException{
-        //TODO comment adding
-    }
-
-    public void deleteComment(Comment comment) throws SQLException{
-        //TODO comment deleting
-    }
-
-    public void likeComment(Comment comment) throws SQLException{
-        //TODO comment liking
-    }
-
-    public void dislikeComment(Comment comment) throws SQLException{
-        //TODO comment disliking
-    }
-
-    //------------------ albums manipulations ------------------//
-    public void addAlbumInDB(Album album) throws SQLException {
-        String sql = "INSERT INTO albums (name, belonger_id) VALUES (?,?)";
-        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        stmt.setString(1,album.getName());
-        stmt.setInt(2,album.getUserID());
-        stmt.executeUpdate();
-
-        ResultSet generatedKeys = stmt.getGeneratedKeys();
-        int id;
-        if (generatedKeys.next()) {
-            id = generatedKeys.getInt(1);
-            album.setId(id);
-        } else {
-            throw new SQLException("Creating post failed, no ID obtained.");
-        }
-        stmt.close();
-    }
-
     //================== Post likes/dislikes ==================//
 
     private int addLikeDislike(Post post, User user, int status) throws SQLException {
@@ -213,7 +165,6 @@ public class PostDao extends Dao {
         //Insert, newly created row - 1 row affected
         //Update, status changed to opposite - 2 rows affected
         int affectedRows = stmt.executeUpdate();
-        System.out.println(affectedRows);
         stmt.close();
         return affectedRows;
 
