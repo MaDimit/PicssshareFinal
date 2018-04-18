@@ -19,16 +19,16 @@ public class AlbumManager {
         return instance;
     }
 
-//    public static void main(String[] args) {
-//        try {
-//            User u = LoggingManager.getInstance().login("Phillip", "Pass112233");
-//            createAlbum(u, "Friends");
-//        } catch (LoggingManager.LoggingException e) {
-//            e.printStackTrace();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public static void main(String[] args) {
+        try {
+            User u = LoggingManager.getInstance().login("Phillip", "Pass112233");
+//            AlbumDao.getInstance().createAlbum(u, "Friends");
+        } catch (LoggingManager.LoggingException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void createAlbum(User u, String name) throws SQLException {

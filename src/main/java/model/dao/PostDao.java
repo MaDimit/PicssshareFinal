@@ -25,27 +25,8 @@ public class PostDao extends Dao {
 
     private PostDao() {
         super();
-//        this.posts = new HashMap<>();
     }
 
-//    public HashMap<Integer, Post> getPosts() {
-//        return posts;
-//    }
-//
-//    //method for fill the collection with posts and all the information about them
-//    public void loadAllPosts() throws SQLException {
-//        String sql = "SELECT id,date,poster_id,url FROM posts";
-//        PreparedStatement stmt = conn.prepareStatement(sql);
-//        ResultSet rs = stmt.executeQuery();
-//        while (rs.next()) {
-//            Post p = createPost(rs);
-//            this.posts.put(p.getId(), p);
-//        }
-//        stmt.close();
-//
-//    }
-//
-//
 
 
     //================== Posts Interface ==================//

@@ -85,7 +85,7 @@ public class Comment implements Comparable<Comment> {
     public String toString() {
         return "Comment{" +
                 "id=" + id +
-                ", post=" + post +
+                ", post=" + post.getId() +
                 ", user=" + user +
                 ", date=" + date +
                 ", content='" + content + '\'' +

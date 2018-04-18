@@ -12,26 +12,16 @@ public class UserDao extends Dao {
 
 
     private static UserDao instance = new UserDao();
-    // lazy singleton
+
     private UserDao() {
         super();
     }
 
-    // singleton instance used in usermanager
     public static UserDao getInstance() {
         return instance;
     }
 
-    User createUser(ResultSet rs) throws SQLException{
-        int id = rs.getInt("id");
-        String username = rs.getString("username");
-        String password = rs.getString("password");
-        String firstname = rs.getString("first_name");
-        String lastname = rs.getString("last_name");
-        String email = rs.getString("email");
-        String profilePicUrl = rs.getString("profile_picture_url");
-        return new User (id, username, password, firstname, lastname, email, profilePicUrl);
-    }
+    //================== User Interface ==================//
 
     public User getUserByID(int id) throws SQLException {
         String sql = "SELECT id, username, password, first_name, last_name, email, profile_picture_url FROM users WHERE users.id = ?";
@@ -39,43 +29,9 @@ public class UserDao extends Dao {
         stmt.setInt(1,id);
         ResultSet resultSet = stmt.executeQuery();
         if(resultSet.next()) {
-           return createUser(resultSet);
+            return createUser(resultSet);
         }
         return null;
-    }
-
-
-    public boolean checkIfUsernameIsTaken(String username) throws SQLException {
-        String sql = "SELECT users.username FROM users WHERE users.username = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        stmt.setString(1,username);
-        ResultSet resultSet = stmt.executeQuery();
-        //return true if exists and false if not
-        return resultSet.next();
-    }
-
-    public boolean checkIfEmailIsTaken(String email) throws SQLException {
-        String sql = "SELECT users.username FROM users WHERE users.email = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        stmt.setString(1,email);
-        ResultSet resultSet = stmt.executeQuery();
-        //return true if exists and false if not
-        return resultSet.next();
-    }
-
-    public User login(String username) throws SQLException{
-        String sql = "SELECT id, username, password,first_name,last_name,email,profile_picture_url FROM users WHERE users.username = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1,username);
-        ResultSet rs = stmt.executeQuery();
-        if(!rs.next()){
-            return null;
-        }
-        int id = rs.getInt("id");
-        User user = createUser(rs);
-        loadUsersAlbums(user);
-        stmt.close();
-        return user;
     }
 
     public void loadUsersAlbums(User u) throws SQLException {
@@ -94,27 +50,6 @@ public class UserDao extends Dao {
             }
             u.getAlbums().get(albumID).addPost(PostDao.getInstance().getPost(postID));
         }
-    }
-
-
-    public void registerUser(User user) throws SQLException {
-
-        // Inserting into DB
-        String sql = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
-        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        stmt.setString(1, user.getUsername());
-        stmt.setString(2, user.getPassword());
-        stmt.setString(3, user.getEmail());
-        stmt.executeUpdate();
-
-        // Getting id for registered user
-        ResultSet generatedKeys = stmt.getGeneratedKeys();
-        if (generatedKeys.next()) {
-            user.setId(generatedKeys.getInt(1));
-        } else {
-            throw new SQLException("Creating user failed, no ID obtained.");
-        }
-        stmt.close();
     }
 
     public void addSubscription(User subscriber, User subscribedTo) throws SQLException {
@@ -182,8 +117,8 @@ public class UserDao extends Dao {
             }
         }
         if (!profilePicURL.equalsIgnoreCase(u.getProfilePicUrl())) {
-                notNullValues.put("profilePicURL", profilePicURL);
-                u.setProfilePicUrl(profilePicURL);
+            notNullValues.put("profilePicURL", profilePicURL);
+            u.setProfilePicUrl(profilePicURL);
         }
 
         StringBuilder sb = new StringBuilder();
@@ -208,4 +143,74 @@ public class UserDao extends Dao {
         stmt.executeUpdate();
         stmt.close();
     }
+
+    //================== Logging and Registration ==================//
+
+    public boolean checkIfUsernameIsTaken(String username) throws SQLException {
+        String sql = "SELECT users.username FROM users WHERE users.username = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1,username);
+        ResultSet resultSet = stmt.executeQuery();
+        //return true if exists and false if not
+        return resultSet.next();
+    }
+
+    public boolean checkIfEmailIsTaken(String email) throws SQLException {
+        String sql = "SELECT users.username FROM users WHERE users.email = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1,email);
+        ResultSet resultSet = stmt.executeQuery();
+        //return true if exists and false if not
+        return resultSet.next();
+    }
+
+    public User login(String username) throws SQLException{
+        String sql = "SELECT id, username, password,first_name,last_name,email,profile_picture_url FROM users WHERE users.username = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setString(1,username);
+        ResultSet rs = stmt.executeQuery();
+        if(!rs.next()){
+            return null;
+        }
+        int id = rs.getInt("id");
+        User user = createUser(rs);
+        loadUsersAlbums(user);
+        stmt.close();
+        return user;
+    }
+
+
+    public void registerUser(User user) throws SQLException {
+
+        // Inserting into DB
+        String sql = "INSERT INTO users (username, password, email) VALUES (?,?,?)";
+        PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, user.getUsername());
+        stmt.setString(2, user.getPassword());
+        stmt.setString(3, user.getEmail());
+        stmt.executeUpdate();
+
+        // Getting id for registered user
+        ResultSet generatedKeys = stmt.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            user.setId(generatedKeys.getInt(1));
+        } else {
+            throw new SQLException("Creating user failed, no ID obtained.");
+        }
+        stmt.close();
+    }
+
+    //================== User Creation ==================//
+
+    User createUser(ResultSet rs) throws SQLException{
+        int id = rs.getInt("id");
+        String username = rs.getString("username");
+        String password = rs.getString("password");
+        String firstname = rs.getString("first_name");
+        String lastname = rs.getString("last_name");
+        String email = rs.getString("email");
+        String profilePicUrl = rs.getString("profile_picture_url");
+        return new User (id, username, password, firstname, lastname, email, profilePicUrl);
+    }
+
 }
