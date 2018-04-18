@@ -69,6 +69,25 @@ public class CommentDao extends Dao {
 
     //================== Comments creation ==================//
 
+    public Comment getCommentByID(int id) throws SQLException {
+        String sql = "SELECT id, poster_id, date, content, post_id FROM comments WHERE comments.id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,id);
+        ResultSet resultSet = stmt.executeQuery();
+        if(resultSet.next()) {
+             int commentID = resultSet.getInt("id");
+             int posterID = resultSet.getInt("poster_id");
+             LocalDateTime time = resultSet.getTimestamp("date").toLocalDateTime();
+             String content = resultSet.getString("content");
+             int postID = resultSet.getInt("post_id");
+             Comment c = new Comment(commentID, PostDao.getInstance().getPost(postID), UserDao.getInstance().getUserByID(posterID), time, content);
+             c.setLikers(getCommentLikers(c.getId()));
+             return c;
+        }
+        return null;
+    }
+
+
     List<Comment> getAllComments(Post post) throws SQLException {
         ArrayList<Comment> comments = new ArrayList<>();
         //Fetching users from DB
@@ -89,21 +108,33 @@ public class CommentDao extends Dao {
         LocalDateTime postDate = rs.getTimestamp("date").toLocalDateTime();
         String content = rs.getString("content");
         Comment c = new Comment(commentId, post, UserDao.getInstance().getUserByID(posterId), postDate, content);
-        c.setLikers(this.getCommentLikers(c));
+        c.setLikers(this.getCommentLikers(c.getId()));
         return c;
     }
 
-    private List<User> getCommentLikers(Comment comment) throws SQLException {
+    private  List<User> getCommentLikers(int commentID) throws SQLException {
         List<User> likers = new ArrayList<>();
         String sql = "SELECT id, username, password, first_name, last_name,email, profile_picture_url FROM users\n" +
                 "JOIN liker_comment ON id = comment_liker_id\n" +
                 "WHERE liked_comment_id = ?;";
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, comment.getId());
+        stmt.setInt(1, commentID);
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
             likers.add(UserDao.getInstance().createUser(rs));
         }
         return likers;
     }
+
+    //param is the new comment
+    public void editComment(Comment comment) throws SQLException {
+        String sql = "UPDATE comments SET comments.date = ?, comments.content = ? WHERE comments.id=?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setObject(1, comment.getDate());
+        stmt.setString(2, comment.getContent());
+        stmt.setInt(3, comment.getId());
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
 }

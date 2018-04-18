@@ -41,6 +41,15 @@ public class Comment implements Comparable<Comment> {
 
     //========================== Setters ==========================//
 
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
