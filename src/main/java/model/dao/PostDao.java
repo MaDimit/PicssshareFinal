@@ -13,6 +13,8 @@ import java.util.List;
 
 public class PostDao extends Dao {
 
+    private static final int TRENDING_DAYS = 1;
+
 //    private HashMap<Integer, Post> posts;
     private static PostDao instance = new PostDao();
 
@@ -136,18 +138,41 @@ public class PostDao extends Dao {
     //------------------ feed creation ------------------//
 
     public List<Post> getUserFeed(User user) throws SQLException{
-        //TODO generating user posts feed
-        return null;
+        List<Post> posts = new ArrayList<>();
+        String sql = "SELECT id, date, poster_id, url FROM posts WHERE poster_id = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,user.getId());
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()){
+            posts.add(createPost(rs));
+        }
+        return posts;
     }
 
     public List<Post> getFriendsFeed(User user) throws SQLException{
-        //TODO generating friends feed
-        return null;
+        List<Post> posts = new ArrayList<>();
+        String sql = "SELECT id, date, poster_id, url FROM posts p\n" +
+                "JOIN subscriber_subscribed s ON  s.subscriber_id = ?\n" +
+                "WHERE poster_id = subscribedto_id";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,user.getId());
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()){
+            posts.add(createPost(rs));
+        }
+        return posts;
     }
 
     public List<Post> getTrendingFeed()throws SQLException{
-        //TODO generating trending feed
-        return null;
+        List<Post> posts = new ArrayList<>();
+        String sql = "SELECT id, date, poster_id, url FROM posts WHERE date >= NOW() - INTERVAL ? DAY;";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, TRENDING_DAYS);
+        ResultSet rs = stmt.executeQuery();
+        while(rs.next()){
+            posts.add(createPost(rs));
+        }
+        return posts;
     }
 
     //================== Post likes/dislikes ==================//
@@ -178,18 +203,18 @@ public class PostDao extends Dao {
         User user = UserDao.getInstance().getUserByID(rs.getInt("poster_id"));
         String url = rs.getString("url");
         LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
-        List<String> tags = getAllTagsForPost(id);
-        List<Comment> comments = getAllComments(id);
-        List<User> likers = getPostLikers(id);
-        List<User> dislikers = getPostDislikers(id);
 
         //add all the info for the post
-        Post post = new Post(id, user, url, date, tags, comments, likers, dislikers);
+        Post post = new Post(id, user, url, date);
+        post.setTags(getAllTagsForPost(post));
+        post.setComments(getAllComments(post));
+        post.setLikers(getPostLikers(post));
+        post.setDislikers(getPostDislikers(post));
         return post;
     }
 
     //get all the tags related to this post
-    private List<String> getAllTagsForPost(int postID) throws SQLException {
+    private List<String> getAllTagsForPost(Post post) throws SQLException {
         List<String> tags = new ArrayList<>();
 
         //Fetching tags from DB
@@ -200,7 +225,7 @@ public class PostDao extends Dao {
                 "                WHERE posts.id = ? \n" +
                 "                ORDER BY tags.tag_name;";
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, postID);
+        stmt.setInt(1, post.getId());
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
             String tag = rs.getString("tag_name");
@@ -210,12 +235,12 @@ public class PostDao extends Dao {
         return tags;
     }
 
-    private ArrayList<User> getPostLikers(int postID) throws SQLException {
-        return getLikersDislikers(postID, 1);
+    private ArrayList<User> getPostLikers(Post post) throws SQLException {
+        return getLikersDislikers(post.getId(), 1);
     }
 
-    private ArrayList<User> getPostDislikers(int postID) throws SQLException {
-        return getLikersDislikers(postID, -1);
+    private ArrayList<User> getPostDislikers(Post post) throws SQLException {
+        return getLikersDislikers(post.getId(), -1);
     }
 
     private ArrayList<User> getLikersDislikers(int postID, int status) throws SQLException {
@@ -237,19 +262,19 @@ public class PostDao extends Dao {
         return users;
     }
 
-    private List<Comment> getAllComments(int postId) throws SQLException {
+    private List<Comment> getAllComments(Post post) throws SQLException {
         ArrayList<Comment> comments = new ArrayList<>();
         //Fetching users from DB
         String sql = "SELECT id, poster_id, date, content, post_id FROM comments WHERE post_id=? ORDER BY date DESC";
         PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, postId);
+        stmt.setInt(1, post.getId());
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
             int commentId = rs.getInt("id");
             int posterId = rs.getInt("poster_id");
             LocalDateTime postDate = rs.getTimestamp("date").toLocalDateTime();
             String content = rs.getString("content");
-            Comment c = new Comment(commentId, PostDao.getInstance().posts.get(posterId), UserDao.getInstance().getUserByID(posterId), postDate, content);
+            Comment c = new Comment(commentId, post, UserDao.getInstance().getUserByID(posterId), postDate, content);
             comments.add(c);
         }
         stmt.close();

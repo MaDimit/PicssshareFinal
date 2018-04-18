@@ -1,5 +1,6 @@
 package controllers.managers;
 
+import model.dao.AlbumDao;
 import model.dao.PostDao;
 import model.pojo.Album;
 import model.pojo.Post;
@@ -25,7 +26,7 @@ public class AlbumManager {
         //create album object
         Album album = new Album(u, name);
         //add in db
-        PostDao.getInstance().addAlbumInDB(album);
+        AlbumDao.getInstance().addAlbumInDB(album);
         //add in user's collection
         u.addAlbum(album);
     }

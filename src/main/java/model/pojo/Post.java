@@ -16,15 +16,11 @@ public class Post implements Comparable<Post> {
     private List<User> dislikers;
 
     //Post creation from DB
-    public Post(int id, User poster, String url, LocalDateTime date, List<String> tags, List<Comment> comments, List<User> likers, List<User> dislikers) {
+    public Post(int id, User poster, String url, LocalDateTime date) {
         this.id = id;
         this.poster = poster;
         this.url = url;
         this.date = date;
-        this.tags = tags;
-        this.comments = comments;
-        this.likers = likers;
-        this.dislikers = dislikers;
     }
 
     //New Post creation
@@ -79,6 +75,22 @@ public class Post implements Comparable<Post> {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public void setLikers(List<User> likers) {
+        this.likers = likers;
+    }
+
+    public void setDislikers(List<User> dislikers) {
+        this.dislikers = dislikers;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     //========================== Getters ==========================//
