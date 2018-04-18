@@ -34,23 +34,23 @@ public class UserDao extends Dao {
         return null;
     }
 
-    public void loadUsersAlbums(User u) throws SQLException {
-        String sql = "SELECT albums.id as album_id,albums.name, posts.id as post_id\n" +
-                "FROM albums JOIN albums_has_posts ON albums_has_posts.album_id=albums.id\n" +
-                "JOIN posts ON albums_has_posts.post_id=posts.id WHERE albums.belonger_id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1,u.getId());
-        ResultSet resultSet = stmt.executeQuery();
-        while(resultSet.next()){
-            int albumID = resultSet.getInt(1);
-            String albumName = resultSet.getString(2);
-            int postID = resultSet.getInt(3);
-            if(u.getAlbumByID(albumID)==null){
-                u.addAlbum(new Album(u, albumName, albumID));
-            }
-            u.getAlbums().get(albumID).addPost(PostDao.getInstance().getPost(postID));
-        }
-    }
+//    public void loadUsersAlbums(User u) throws SQLException {
+//        String sql = "SELECT albums.id as album_id,albums.name, posts.id as post_id\n" +
+//                "FROM albums JOIN albums_has_posts ON albums_has_posts.album_id=albums.id\n" +
+//                "JOIN posts ON albums_has_posts.post_id=posts.id WHERE albums.belonger_id = ?";
+//        PreparedStatement stmt = conn.prepareStatement(sql);
+//        stmt.setInt(1,u.getId());
+//        ResultSet resultSet = stmt.executeQuery();
+//        while(resultSet.next()){
+//            int albumID = resultSet.getInt(1);
+//            String albumName = resultSet.getString(2);
+//            int postID = resultSet.getInt(3);
+//            if(u.getAlbumByID(albumID)==null){
+//                u.addAlbum(new Album(u, albumName, albumID));
+//            }
+//            u.getAlbums().get(albumID).addPost(PostDao.getInstance().getPost(postID));
+//        }
+//    }
 
     public void addSubscription(User subscriber, User subscribedTo) throws SQLException {
         String sql = "INSERT INTO subscriber_subscribed (subscriber_id, subscribedto_id) VALUES (?,?)";
@@ -174,7 +174,7 @@ public class UserDao extends Dao {
         }
         int id = rs.getInt("id");
         User user = createUser(rs);
-        loadUsersAlbums(user);
+       // loadUsersAlbums(user);
         stmt.close();
         return user;
     }

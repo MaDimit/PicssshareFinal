@@ -2,11 +2,13 @@ package controllers.managers;
 
 import model.dao.AlbumDao;
 import model.dao.PostDao;
+import model.dao.UserDao;
 import model.pojo.Album;
 import model.pojo.Post;
 import model.pojo.User;
 
 import java.sql.SQLException;
+import java.util.List;
 
 public class AlbumManager {
     private final static AlbumManager instance = new AlbumManager();
@@ -31,13 +33,15 @@ public class AlbumManager {
     }
 
 
+    public List<Album> getAllAlbumsForUser(int userID) throws SQLException {
+        return AlbumDao.getInstance().getAllAlbumsForUser(userID);
+    }
+
     public void createAlbum(User u, String name) throws SQLException {
         //create album object
         Album album = new Album(u, name);
         //add in db
         AlbumDao.getInstance().addAlbumInDB(album);
-        //add in user's collection
-        u.addAlbum(album);
     }
 
     public static void addPostInAlbum(int postID, int albumID) throws SQLException {
