@@ -78,14 +78,14 @@ public class PostDao extends Dao {
 
     //================== Posts Interface ==================//
 
+    //------------------ post manipulations ------------------//
+
     public void addPost(Post post) throws SQLException {
-        String sql = "INSERT INTO posts (likes, dislikes, date, poster_id, url) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO posts (date, poster_id, url) VALUES (?,?,?)";
         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        stmt.setInt(1, post.getLikes());
-        stmt.setInt(2, post.getDislikes());
-        stmt.setObject(3, Timestamp.valueOf(post.getDate()));
-        stmt.setInt(4, post.getPoster().getId());
-        stmt.setString(5, post.getUrl());
+        stmt.setObject(1, Timestamp.valueOf(post.getDate()));
+        stmt.setInt(2, post.getPoster().getId());
+        stmt.setString(3, post.getUrl());
         stmt.executeUpdate();
 
         ResultSet generatedKeys = stmt.getGeneratedKeys();
@@ -100,7 +100,7 @@ public class PostDao extends Dao {
     }
 
     public Post getPost(int id) throws SQLException {
-        String sql = "SELECT id, date, poster_id, url, likes, dislikes FROM posts WHERE id = ?";
+        String sql = "SELECT id, date, poster_id, url FROM posts WHERE id = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1, id);
         ResultSet rs = stmt.executeQuery();
@@ -117,93 +117,87 @@ public class PostDao extends Dao {
         stmt.close();
     }
 
-
+    //------------------ liking/disliking ------------------//
 
     public void addLike(Post post, User user) throws SQLException {
-        addLikeDislike(post, user, 1);
-    }
-
-    public void addDislike(Post post, User user) throws SQLException {
-        addLikeDislike(post, user, -1);
-    }
-
-    //================== Post likes/dislikes ==================//
-
-    private void addLikeDislike(Post post, User user, int status) throws SQLException{
         synchronized (post) {
-            try {
-                //Open transaction
-                conn.setAutoCommit(false);
-                //Inserting or updating liker_post table
-                String likerPostSQL = "INSERT INTO liker_post (liker_id, likedpost_id, status) VALUES (?, ?, ?)\n" +
-                        "  ON DUPLICATE KEY UPDATE status = ?;";
-                PreparedStatement likerPostStmt = conn.prepareStatement(likerPostSQL);
-                likerPostStmt.setInt(1, user.getId());
-                likerPostStmt.setInt(2, post.getId());
-                likerPostStmt.setInt(3, status);
-                likerPostStmt.setInt(4, status);
-                //if row were inserted returns 1, otherwise(updated) returns 0
-                int inserted = likerPostStmt.executeUpdate();
-                //if user add like or dislike for first time
-                // 1. like case : like + 1, dislike + 0.
-                // 2. dislike case : dislike + 1, like + 0;
-                // if user add like while he had dislike before and vice versa, old value should be changed in post.
-                // 1. like case: like + 1, dislike - 1.
-                // 2. dislike case: like - 1, dislike + 1.
-                int like = 0;
-                int dislike = 0;
-                if (inserted == 1) {
-                    if (status == 1) {
-                        like = 1;
-                    } else {
-                        dislike = 1;
-                    }
-                } else {
-                    like = status;
-                    dislike = status * -1;
-                }
-                //Updating post table
-                String postSQL = "UPDATE posts SET likes = likes + ?, dislikes = dislikes + ? WHERE id = ?";
-                PreparedStatement postsStmt = conn.prepareStatement(postSQL);
-                postsStmt.setInt(1, like);
-                postsStmt.setInt(2, dislike);
-                postsStmt.setInt(3, post.getId());
-                postsStmt.executeUpdate();
-
-                post.addLike(like);
-                post.addDislike(dislike);
-
-                likerPostStmt.close();
-                postsStmt.close();
-
-
-            } catch (SQLException e) {
-                conn.rollback();
-                throw e;
-            }finally {
-                conn.setAutoCommit(true);
+            int affectedRows = addLikeDislike(post, user, 1);
+            if (affectedRows == 1) {
+                post.addLiker(user);
+            } else if (affectedRows == 2) {
+                post.addLiker(user);
+                post.removeDisliker(user);
             }
         }
     }
 
+    public void addDislike(Post post, User user) throws SQLException {
+        synchronized (post) {
+            int affectedRows = addLikeDislike(post, user, -1);
+            if (affectedRows == 1) {
+                post.addDisliker(user);
+            } else if (affectedRows == 2) {
+                post.addDisliker(user);
+                post.removeLiker(user);
+            }
+        }
+    }
 
-//    public void updateLikes(Post post) throws SQLException {
-//        String sql = "UPDATE posts SET likes = ? WHERE id = ?";
-//        PreparedStatement stmt = conn.prepareStatement(sql);
-//        stmt.setInt(1, post.getLikes());
-//        stmt.setInt(2, post.getId());
-//        stmt.executeUpdate();
-//        stmt.close();
-//    }
-//
-//    public void addInLikerPostTable(User liker, Post post) throws SQLException {
-//        String sql = "INSERT INTO liker_post (`liker_id`, `likedpost_id`, `status`) VALUES (?,?,1)";
-//        PreparedStatement stmt = conn.prepareStatement(sql);
-//        stmt.setInt(1, liker.getId());
-//        stmt.setInt(2, post.getId());
-//        stmt.executeUpdate();
-//        stmt.close();
-//    }
+    //------------------ feed creation ------------------//
+
+    public List<Post> getUserFeed(User user) throws SQLException{
+        //TODO generating user posts feed
+        return null;
+    }
+
+    public List<Post> getFriendsFeed(User user) throws SQLException{
+        //TODO generating friends feed
+        return null;
+    }
+
+    public List<Post> getTrendingFeed()throws SQLException{
+        //TODO generating trending feed
+        return null;
+    }
+
+    //------------------ comment manipulations ------------------//
+
+    public void addComment(Comment comment) throws SQLException{
+        //TODO comment adding
+    }
+
+    public void deleteComment(Comment comment) throws SQLException{
+        //TODO comment deleting
+    }
+
+    public void likeComment(Comment comment) throws SQLException{
+        //TODO comment liking
+    }
+
+    public void dislikeComment(Comment comment) throws SQLException{
+        //TODO comment disliking
+    }
+
+    //================== Post likes/dislikes ==================//
+
+    private int addLikeDislike(Post post, User user, int status) throws SQLException {
+        //Inserting or updating liker_post table
+        String sql = "INSERT INTO liker_post (liker_id, likedpost_id, status) VALUES (?, ?, ?)\n" +
+                "  ON DUPLICATE KEY UPDATE status = ?;";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, user.getId());
+        stmt.setInt(2, post.getId());
+        stmt.setInt(3, status);
+        stmt.setInt(4, status);
+        //Update, row already existed with a status - 1 row affected
+        //Insert, newly created row - 1 row affected
+        //Update, status changed to opposite - 2 rows affected
+        int affectedRows = stmt.executeUpdate();
+        System.out.println(affectedRows);
+        stmt.close();
+        return affectedRows;
+
+    }
 
     //================== Post creation ==================//
 
@@ -212,8 +206,6 @@ public class PostDao extends Dao {
         int id = rs.getInt("id");
         User user = UserDao.getInstance().getUserByID(rs.getInt("poster_id"));
         String url = rs.getString("url");
-        int likes = rs.getInt("likes");
-        int dislikes = rs.getInt("dislikes");
         LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
         List<String> tags = getAllTagsForPost(id);
         List<Comment> comments = getAllComments(id);
@@ -221,7 +213,7 @@ public class PostDao extends Dao {
         List<User> dislikers = getPostDislikers(id);
 
         //add all the info for the post
-        Post post = new Post(id, user, url, likes, dislikes, date, tags, comments, likers, dislikers);
+        Post post = new Post(id, user, url, date, tags, comments, likers, dislikers);
         return post;
     }
 

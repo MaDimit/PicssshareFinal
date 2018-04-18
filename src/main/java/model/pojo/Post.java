@@ -7,8 +7,6 @@ import java.util.List;
 public class Post implements Comparable<Post> {
 
     private int id;
-    private int likes;
-    private int dislikes;
     private LocalDateTime date;
     private User poster;
     private String url;
@@ -18,12 +16,10 @@ public class Post implements Comparable<Post> {
     private List<User> dislikers;
 
     //Post creation from DB
-    public Post(int id, User poster, String url, int likes, int dislikes, LocalDateTime date, List<String> tags, List<Comment> comments, List<User> likers, List<User> dislikers) {
+    public Post(int id, User poster, String url, LocalDateTime date, List<String> tags, List<Comment> comments, List<User> likers, List<User> dislikers) {
         this.id = id;
         this.poster = poster;
         this.url = url;
-        this.likes = likes;
-        this.dislikes = dislikes;
         this.date = date;
         this.tags = tags;
         this.comments = comments;
@@ -36,22 +32,30 @@ public class Post implements Comparable<Post> {
         this.poster = user;
         this.url = url;
         this.date = LocalDateTime.now();
-        this.likes = 0;
-        this.dislikes = 0;
         this.tags = new ArrayList<>();
         this.comments = new ArrayList<>();
         this.likers = new ArrayList<>();
         this.dislikers = new ArrayList<>();
     }
 
-    public void addLike(int value) {
-        synchronized (this) {
-            likes += value;
+    public void addLiker(User liker) {
+        if(!likers.contains(liker)) {
+            this.likers.add(liker);
         }
     }
 
-    public void addDislike(int value) {
-        dislikes += value;
+    public void removeLiker(User user) {
+        likers.remove(user);
+    }
+
+    public void addDisliker(User disliker) {
+        if(!dislikers.contains(disliker)) {
+            this.dislikers.add(disliker);
+        }
+    }
+
+    public void removeDisliker(User user) {
+        dislikers.remove(user);
     }
 
     public void addTag(String tag) {
@@ -84,11 +88,11 @@ public class Post implements Comparable<Post> {
     }
 
     public int getLikes() {
-        return likes;
+        return likers.size();
     }
 
     public int getDislikes() {
-        return dislikes;
+        return dislikers.size();
     }
 
     public LocalDateTime getDate() {
@@ -128,13 +132,15 @@ public class Post implements Comparable<Post> {
     public String toString() {
         return "Post{" +
                 "id=" + id +
-                ", likes=" + likes +
+                ", likes=" + likers.size() +
+                ", dislikes=" + dislikers.size() +
                 ", date=" + date +
                 ", poster=" + poster +
                 ", url='" + url + '\'' +
                 ", tags=" + tags +
                 ", comments=" + comments +
                 ", likers=" + likers +
+                ", dislikers=" + dislikers +
                 '}';
     }
 }
