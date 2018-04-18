@@ -101,6 +101,7 @@ public class PostDao extends Dao {
         return post;
     }
 
+
     public void deletePost(int id) throws SQLException {
         //delete from db
         String sql = "DELETE FROM posts WHERE id=(?)";
@@ -202,7 +203,7 @@ public class PostDao extends Dao {
     //================== Post creation ==================//
 
     // Used in post creation for getPost, and feed. Should be added to while loop or used once with rs.next;
-    private Post createPost(ResultSet rs) throws SQLException {
+    public Post createPost(ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
         User user = UserDao.getInstance().getUserByID(rs.getInt("poster_id"));
         String url = rs.getString("url");

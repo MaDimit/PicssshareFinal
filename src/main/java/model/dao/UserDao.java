@@ -74,28 +74,28 @@ public class UserDao extends Dao {
         String email = rs.getString("email");
         String profilePicUrl = rs.getString("profile_picture_url");
         User user = new User(id,userName,password,firstname,lastname,email,profilePicUrl);
-        loadUsersAlbums(user);
+        //loadUsersAlbums(user);
         stmt.close();
         return user;
     }
 
-    public void loadUsersAlbums(User u) throws SQLException {
-        String sql = "SELECT albums.id as album_id,albums.name, posts.id as post_id\n" +
-                "FROM albums JOIN albums_has_posts ON albums_has_posts.album_id=albums.id\n" +
-                "JOIN posts ON albums_has_posts.post_id=posts.id WHERE albums.belonger_id = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1,u.getId());
-        ResultSet resultSet = stmt.executeQuery();
-        while(resultSet.next()){
-            int albumID = resultSet.getInt(1);
-            String albumName = resultSet.getString(2);
-            int postID = resultSet.getInt(3);
-            if(u.getAlbumByID(albumID)==null){
-                u.addAlbum(new Album(u, albumName, albumID));
-            }
-            u.getAlbums().get(albumID).addPost(PostDao.getInstance().getPost(postID));
-        }
-    }
+//    public void loadUsersAlbums(User u) throws SQLException {
+//        String sql = "SELECT albums.id as album_id,albums.name, posts.id as post_id\n" +
+//                "FROM albums JOIN albums_has_posts ON albums_has_posts.album_id=albums.id\n" +
+//                "JOIN posts ON albums_has_posts.post_id=posts.id WHERE albums.belonger_id = ?";
+//        PreparedStatement stmt = conn.prepareStatement(sql);
+//        stmt.setInt(1,u.getId());
+//        ResultSet resultSet = stmt.executeQuery();
+//        while(resultSet.next()){
+//            int albumID = resultSet.getInt(1);
+//            String albumName = resultSet.getString(2);
+//            int postID = resultSet.getInt(3);
+//            if(u.getAlbumByID(albumID)==null){
+//                u.addAlbum(new Album(u, albumName, albumID));
+//            }
+//            u.getAlbums().get(albumID).addPost(PostDao.getInstance().getPost(postID));
+//        }
+//    }
 
 
     public void registerUser(User user) throws SQLException {
