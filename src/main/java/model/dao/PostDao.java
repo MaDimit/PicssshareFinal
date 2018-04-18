@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class PostDao extends Dao {
@@ -97,11 +98,31 @@ public class PostDao extends Dao {
         }
     }
 
+    public HashSet<String> getAllLikers() throws SQLException{
+        return getAllLikesDislikes(1);
+    }
+
+    public HashSet<String> getAllDislikers() throws SQLException{
+        return getAllLikesDislikes(-1);
+    }
+
+    private HashSet<String> getAllLikesDislikes(int status) throws SQLException{
+        HashSet<String> users = new HashSet<>();
+        String sql = "SELECT liker_id, likedpost_id FROM liker_post WHERE status = ?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1, status);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()){
+            users.add(rs.getInt("liker_id") + "" + rs.getInt("likedpost_id"));
+        }
+        return users;
+    }
+
     //------------------ feed creation ------------------//
 
     public List<Post> getUserFeed(User user) throws SQLException{
         List<Post> posts = new ArrayList<>();
-        String sql = "SELECT id, date, poster_id, url FROM posts WHERE poster_id = ?";
+        String sql = "SELECT id, date, poster_id, url FROM posts WHERE poster_id = ? ORDER BY date";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1,user.getId());
         ResultSet rs = stmt.executeQuery();
@@ -116,7 +137,7 @@ public class PostDao extends Dao {
         List<Post> posts = new ArrayList<>();
         String sql = "SELECT id, date, poster_id, url FROM posts p\n" +
                 "JOIN subscriber_subscribed s ON  s.subscriber_id = ?\n" +
-                "WHERE poster_id = subscribedto_id";
+                "WHERE poster_id = subscribedto_id ORDER BY date";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setInt(1,user.getId());
         ResultSet rs = stmt.executeQuery();

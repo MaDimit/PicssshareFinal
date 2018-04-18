@@ -1,94 +1,137 @@
-//package controllers.managers;
-//import java.sql.SQLException;
-//import java.time.LocalDateTime;
-//import java.time.temporal.ChronoUnit;
-//import java.util.Map;
-//
-//import model.dao.PostDao;
-//import model.pojo.Post;
-//import model.pojo.User;
-//
-//public class PostManager {
-//
-//    public static class PostException extends Exception{
-//        public PostException(String msg) {
-//            super(msg);
-//        }
-//    }
-//
-//    private final static PostManager instance = new PostManager();
-//
-//    private PostManager() {
-//
-//    }
-//
-//    public static PostManager getInstance() {
-//        return instance;
-//    }
-//
-//    public void addLike(User liker, Post post) throws SQLException, PostException {
-//        if(post!=null) {
-//            CollectionsManager.getInstance().getPostsByID().get(post.getId()).like();
-//            NotificationBean n = new LikeNotificationBean(liker, post.getPoster(), post);
-//            NotificationManager.getInstance().proceedNotification(n);
-//            PostDao.getInstance().addInLikerPostTable(liker, post);
-//            PostDao.getInstance().updateLikes(post);
-//        }
-//        else {
-//            throw new PostException("Selected post does not exist");
-//        }
-//    }
-//
-//    public void addDislike(PostBean post) throws SQLException,PostException {
-//        if(post!=null) {
-//            CollectionsManager.getInstance().getPostsByID().get(post.getId()).dislike();
-//            PostDao.getInstance().updateLikes(post);
-//        }
-//        else {
-//            throw new PostException("Selected post does not exist");
-//        }
-//    }
-//
-//
-//    public boolean addPost(UserBean user, String url) throws SQLException {
-//        if (url == null || url.isEmpty()) {
-//            System.out.println("Post url is empty.");
-//            return false;
-//        }
-//        if(user == null) {
-//            System.out.println("Adding post is not successfull, user is null");
-//            return false;
-//        }
-//
-//        PostBean post = new PostBean(user, url);
-//        PostDao.getInstance().addPost(post);
-//
-//        user.addPost(post);
-//        System.out.println("Post added by " + user.getUsername());
-//        return true;
-//    }
-//
-//    public void deletePost(int postID) throws PostException, SQLException{
-//        if(postID <= 0) {
-//            throw new PostException("Invalid post");
-//        }
-//        PostDao.getInstance().deletePost(postID);
-//    }
-//
-//    public void showInfo(PostBean post) {
-//        System.out.println("=====INFO ABOUT POST=======");
-//        System.out.println("Likes: " + post.getLikes());
-//        System.out.println("Post time: " + post.getDate());
-//        System.out.println("Poster: " + post.getPoster().getUsername());
-//        System.out.println("URL: " + post.getUrl());
-//        System.out.println("Comments: ");
-//        for (Map.Entry<Integer, CommentBean> entry : post.getCommentsById().entrySet()) {
-//            System.out.print(entry.getValue().getPoster().getUsername());
-//            System.out.print(": " + entry.getValue().getContent());
-//            System.out.print("  --> posted on: " + entry.getValue().getPostTime());
-//            System.out.println();
-//        }
-//        System.out.println("================");
-//    }
-//
-//}
+package controllers.managers;
+
+import model.dao.PostDao;
+import model.pojo.Post;
+import model.pojo.User;
+
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.List;
+
+public class PostManager {
+
+    public static class PostException extends Exception{
+        public PostException(String msg) {
+            super(msg);
+        }
+    }
+    private final PostDao postDao;
+    private HashSet<String> cachedlikes;
+    private HashSet<String> cachedDislikes;
+
+    private final static PostManager instance = new PostManager();
+
+    private PostManager() {
+        this.postDao = PostDao.getInstance();
+        try{
+            this.cachedlikes = postDao.getAllLikers();
+            this.cachedlikes = postDao.getAllDislikers();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static PostManager getInstance() {
+        return instance;
+    }
+
+    //================= Post manipulation =================//
+    public void addPost(Post post)throws PostException{
+        validate(post);
+        try {
+            postDao.addPost(post);
+        }catch (SQLException e){
+            throw new PostException("Problem during adding post to DB");
+        }
+    }
+
+    public void deletePost(Post post) throws PostException{
+        validate(post);
+        try{
+            postDao.deletePost(post.getId());
+        }catch (SQLException e){
+            throw new PostException("Problem during removing post from DB");
+        }
+    }
+
+    public Post getPost(int postID) throws PostException{
+        try{
+            return postDao.getPost(postID);
+        }catch (SQLException e){
+            throw new PostException("Post with this ID can't be found");
+        }
+    }
+
+    //================= liking/disliking =================//
+
+    public boolean likePost(Post post, User user) throws PostException{
+        if(cachedlikes.contains(user.getId() + "" + post.getId())){
+            return false;
+        }
+        try{
+            postDao.addLike(post, user);
+            cachedlikes.add(user.getId() + "" + post.getId());
+        }catch (SQLException e){
+            throw new PostException("Problem during like adding");
+        }
+        return true;
+    }
+
+    public boolean dislikePost(Post post, User user) throws PostException{
+        if(cachedDislikes.contains(user.getId() + "" + post.getId())){
+            return false;
+        }
+        try{
+            postDao.addDislike(post, user);
+            cachedDislikes.add(user.getId() + "" + post.getId());
+        }catch (SQLException e){
+            throw new PostException("Problem during dislike adding");
+        }
+        return true;
+    }
+
+    //================= Feed =================//
+
+    public List<Post> getUserFeed(User user) throws PostException{
+        try {
+            List<Post> posts = postDao.getUserFeed(user);
+            return posts;
+        }catch (SQLException e){
+            throw new PostException("Problem during user feed creation");
+        }
+    }
+
+    public List<Post> getFriendsFeed(User user) throws PostException{
+        try {
+            List<Post> posts = postDao.getFriendsFeed(user);
+            return posts;
+        }catch (SQLException e){
+            throw new PostException("Problem during friends feed creation");
+        }
+    }
+
+    public List<Post> getTrendingFeed() throws PostException{
+        try {
+            List<Post> posts = postDao.getTrendingFeed();
+            posts.sort((p1, p2)->p1.getLikes() + p1.getDislikes() > p2.getLikes() + p2.getDislikes() ? -1 : 1);
+            return posts;
+        }catch (SQLException e){
+            throw new PostException("Problem during trending feed creation");
+        }
+    }
+
+    private void validate(Post post, User user) throws PostException{
+        if(post == null){
+            throw new PostException("Post does not exist");
+        }
+        if(user == null){
+            throw new PostException("User does not exist");
+        }
+
+    }
+
+    private void validate(Post post) throws PostException{
+        validate(post, post.getPoster());
+    }
+
+}

@@ -26,7 +26,7 @@ public class UserManager {
     private UserManager() {
         this.userDao = UserDao.getInstance();
         try {
-            this.cashedSubscriptions = userDao.getSubscriptions();
+            this.cashedSubscriptions = userDao.getAllSubscriptions();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -37,9 +37,7 @@ public class UserManager {
     }
 
     public boolean subscribe(User subscriber, User subscribedTo)throws  UserManagerException{
-        if(subscribedTo == null || subscriber == null){
-            throw new UserManagerException("User you trying to subscribe to does not exist");
-        }
+        validatesubscribtion(subscriber,subscribedTo);
         if(cashedSubscriptions.contains(subscriber.getId() + "" + subscribedTo.getId())){
             return false;
         }
@@ -53,9 +51,7 @@ public class UserManager {
     }
 
     public boolean removeSubscription(User subscriber, User subscribedTo) throws UserManagerException{
-        if(subscribedTo == null || subscriber == null){
-            throw new UserManagerException("User you trying to subscribe to does not exist");
-        }
+        validatesubscribtion(subscriber,subscribedTo);
         if(!cashedSubscriptions.contains(subscriber.getId() + "" + subscribedTo.getId())){
             return false;
         }
@@ -67,6 +63,13 @@ public class UserManager {
         }
         return true;
     }
+
+    private void validatesubscribtion(User subscriber, User subscribedTo) throws UserManagerException{
+        if(subscribedTo == null || subscriber == null){
+            throw new UserManagerException("User you trying to subscribe to does not exist");
+        }
+    }
+
 
     public void updateProfileInfo(User user, String password, String first_name, String last_name, String email, String profilePicURL) throws SQLException, LoggingManager.RegistrationException {
         //TODO add not null validation here instead of UserDao

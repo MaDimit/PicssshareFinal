@@ -79,7 +79,7 @@ public class UserDao extends Dao {
         stmt.close();
     }
 
-    public HashSet<String> getSubscriptions() throws SQLException{
+    public HashSet<String> getAllSubscriptions() throws SQLException{
         HashSet<String> subscriptions = new HashSet<>();
         String sql = "SELECT subscriber_id, subscribedto_id FROM subscriber_subscribed";
         PreparedStatement stmt = conn.prepareStatement(sql);
