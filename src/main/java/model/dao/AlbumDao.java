@@ -19,6 +19,24 @@ public class AlbumDao extends Dao {
         super();
     }
 
+    public static void addPostInAlbumInDB(int postID, int albumID) throws SQLException {
+        String sql = "INSERT INTO albums_has_posts (album_id, post_id) VALUES (?,?)";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,albumID);
+        stmt.setInt(2,postID);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
+    public static void removePostFromAlbumInDB(int postID, int albumID) throws SQLException {
+        String sql = "DELETE FROM albums_has_posts WHERE album_id = ? AND post_id=?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,albumID);
+        stmt.setInt(2,postID);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
 
     public void addAlbumInDB(Album album) throws SQLException {
         String sql = "INSERT INTO albums (name, belonger_id) VALUES (?,?)";
@@ -37,4 +55,13 @@ public class AlbumDao extends Dao {
         }
         stmt.close();
     }
+
+    public static void deleteAlbum(int albumID) throws SQLException {
+        String sql = "DELETE FROM albums WHERE id=?";
+        PreparedStatement stmt = conn.prepareStatement(sql);
+        stmt.setInt(1,albumID);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
 }
