@@ -57,7 +57,7 @@ class DbManager {
 
         this.DB_URL = "jdbc:mysql://127.0.0.1:30249/picssshare?autoReconnect=true&useSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         this.USER = "root";
-        this.PASS = "";
+        this.PASS = "Mdu526143978";
 
 
         this.SCHEMA = "picssshare";

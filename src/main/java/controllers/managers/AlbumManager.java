@@ -21,17 +21,6 @@ public class AlbumManager {
         return instance;
     }
 
-    public static void main(String[] args) {
-        try {
-            User u = LoggingManager.getInstance().login("Phillip", "Pass112233");
-//            AlbumDao.getInstance().createAlbum(u, "Friends");
-        } catch (LoggingManager.LoggingException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public List<Album> getAllAlbumsForUser(int userID) throws SQLException {
         return AlbumDao.getInstance().getAllAlbumsForUser(userID);
