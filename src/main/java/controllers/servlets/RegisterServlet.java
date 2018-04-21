@@ -24,7 +24,7 @@ public class RegisterServlet extends HttpServlet {
             User user = LoggingManager.getInstance().register(username, password, email);
             request.getSession().setAttribute("user", user);
             // create feedservlet
-            request.getRequestDispatcher("userfeed").forward(request, response);
+            request.getRequestDispatcher("index.html").forward(request, response);
         } catch (LoggingManager.RegistrationException e) {
 //            request.setAttribute("error", e.getMessage());
 //            request.getRequestDispatcher("error.jsp").forward(request, response);

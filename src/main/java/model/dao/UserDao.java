@@ -192,7 +192,7 @@ public class UserDao extends Dao {
     }
 
     public User login(String username) throws SQLException{
-        String sql = "SELECT id, username, password,first_name,last_name,email,profile_picture_url FROM users WHERE users.username = ?";
+        String sql = "SELECT id, username, password,first_name,last_name,email,profile_picture_url FROM users WHERE username = ?";
         PreparedStatement stmt = conn.prepareStatement(sql);
         stmt.setString(1,username);
         ResultSet rs = stmt.executeQuery();
@@ -201,7 +201,6 @@ public class UserDao extends Dao {
         }
         int id = rs.getInt("id");
         User user = createUser(rs);
-       // loadUsersAlbums(user);
         stmt.close();
         return user;
     }
@@ -237,6 +236,8 @@ public class UserDao extends Dao {
         String lastname = rs.getString("last_name");
         String email = rs.getString("email");
         String profilePicUrl = rs.getString("profile_picture_url");
+
+        System.out.println("Username = " + username + ", password= " + password + ", firstname: " + firstname + ", lastname: " + lastname + ", email: " + email + ", pic= " + profilePicUrl);
         return new User (id, username, password, firstname, lastname, email, profilePicUrl);
     }
 

@@ -21,11 +21,11 @@ public class LoginServlet extends HttpServlet {
             request.getSession().setAttribute("user", user);
             request.getRequestDispatcher("index.html").forward(request, response);
         } catch (LoggingException e) {
-            request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+//            request.setAttribute("error", e.getMessage());
+//            request.getRequestDispatcher("error.jsp").forward(request, response);
         }catch(Exception e) {
-            request.setAttribute("error", "Something went totaly wrong. Sorry.");
-            request.getRequestDispatcher("error.jsp").forward(request, response);
+//            request.setAttribute("error", "Something went totaly wrong. Sorry.");
+//            request.getRequestDispatcher("error.jsp").forward(request, response);
         }
     }
 }
