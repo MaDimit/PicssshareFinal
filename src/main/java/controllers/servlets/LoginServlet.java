@@ -19,10 +19,17 @@ public class LoginServlet extends HttpServlet {
             String password = request.getParameter("password");
             User user = LoggingManager.getInstance().login(name, password);
             request.getSession().setAttribute("user", user);
-            request.getRequestDispatcher("index.html").forward(request, response);
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write("success");
+            //request.getRequestDispatcher("index.html").forward(request, response);
         } catch (LoggingException e) {
-//            request.setAttribute("error", e.getMessage());
-//            request.getRequestDispatcher("error.jsp").forward(request, response);
+            if(e.getMessage().equals("username")){
+                response.getWriter().write("wrongUsername");
+            }
+            if(e.getMessage().equals("password")){
+                response.getWriter().write("wrongPassword");
+            }
+
         }catch(Exception e) {
 //            request.setAttribute("error", "Something went totaly wrong. Sorry.");
 //            request.getRequestDispatcher("error.jsp").forward(request, response);

@@ -1,76 +1,138 @@
 <!DOCTYPE html>
-<html>
-<title>Picssshare</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<style>
-body,h1,h5 {font-family: "Raleway", sans-serif}
-body, html {height: 100%}
-.bgimg {
-    background-image: url('http://www.fullhdwpp.com/wp-content/uploads/Chicago-City-Monochrome-26_www.FullHDWpp.com_.jpg?x69613');
-    min-height: 100%;
-    background-position: center;
-    background-size: cover;
-}
-</style>
+<html lang="en">
+
+<head>
+    <title>Picssshare</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <style>
+        body, h1, h5 {
+            font-family: "Raleway", sans-serif
+        }
+
+        body, html {
+            height: 100%
+        }
+
+        .bgimg {
+            background-image: url('http://www.fullhdwpp.com/wp-content/uploads/Chicago-City-Monochrome-26_www.FullHDWpp.com_.jpg?x69613');
+            min-height: 100%;
+            background-position: center;
+            background-size: cover;
+        }
+
+        .alert{
+            font-size: 30px;
+            color : #e4606d;
+            width : 100%;
+            text-align: center;
+            position: relative;
+        }
+    </style>
+</head>
 <body>
 
 <div class="bgimg w3-display-container w3-text-white">
-  <div class="w3-display-middle w3-jumbo">
-    <p>Picssshare</p>
-  </div>
-  <div class="w3-display-topleft w3-container w3-xlarge">
-    <p><button onclick="document.getElementById('register').style.display='block'" class="w3-button w3-black">register</button></p>
-    
-    <p><button onclick="document.getElementById('login').style.display='block'" class="w3-button w3-black">login</button></p>
-  </div>
-  <div class="w3-display-bottomleft w3-container">
-    <p class="w3-xlarge">Project for sharing pictures </p>
-    <p class="w3-large">with your friends and colleagues</p>
-     </div>
+    <div class="w3-display-middle w3-jumbo">
+        <p>Picssshare</p>
+    </div>
+    <div class="w3-display-topleft w3-container w3-xlarge">
+        <p>
+            <button onclick="document.getElementById('register').style.display='block'" class="w3-button w3-black">
+                register
+            </button>
+        </p>
+
+        <p>
+            <button onclick="document.getElementById('login').style.display='block'" class="w3-button w3-black">login
+            </button>
+        </p>
+    </div>
+    <div class="w3-display-bottomleft w3-container">
+        <p class="w3-xlarge">Project for sharing pictures </p>
+        <p class="w3-large">with your friends and colleagues</p>
+    </div>
 </div>
 
 
 <!-- Login Modal -->
 <div id="login" class="w3-modal">
-  <div class="w3-modal-content w3-animate-zoom">
-    <div class="w3-container w3-black">
-      <span onclick="document.getElementById('login').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
-      <h1>Login</h1>
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-black">
+            <span onclick="document.getElementById('login').style.display='none'"
+                  class="w3-button w3-display-topright w3-large">x</span>
+            <h1>Login</h1>
+        </div>
+        <div class="w3-container">
+            <p>Login your details</p>
+                <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" id="loginname" name="username"
+                          required></p>
+                <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" id="loginpass"
+                          name="password" required></p>
+                <p>
+                    <button class="w3-button" name="login" id="loginbtn">Login</button>
+                </p>
+            <div class="w3-container alert" style="display: none" id="alert">
+
+            </div>
+        </div>
     </div>
-    <div class="w3-container">
-      <p>Login your details</p>
-      <form action="login" method="POST">
-        <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username" required></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" name="password" required></p>
-        <p><button class="w3-button" type="submit">Login</button></p>
-      </form>
-    </div>
-  </div>
 </div>
 
 <!-- Register Modal -->
 <div id="register" class="w3-modal">
-  <div class="w3-modal-content w3-animate-zoom">
-    <div class="w3-container w3-black">
-      <span onclick="document.getElementById('register').style.display='none'" class="w3-button w3-display-topright w3-large">x</span>
-      <h1>Register</h1>
-    </div>
-    <div class="w3-container">
-      <p>Fill in the fields before get started</p>
-      <form action="register" method="post">
-        <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username" required></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" name="password1" required></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Repeat password" name="password2" required></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="email" placeholder="Email" name="email" required></p>
+    <div class="w3-modal-content w3-animate-zoom">
+        <div class="w3-container w3-black">
+            <span onclick="document.getElementById('register').style.display='none'"
+                  class="w3-button w3-display-topright w3-large">x</span>
+            <h1>Register</h1>
+        </div>
+        <div class="w3-container">
+            <p>Fill in the fields before get started</p>
+            <form action="register" method="post">
+                <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username"
+                          required></p>
+                <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password"
+                          name="password1" required></p>
+                <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Repeat password"
+                          name="password2" required></p>
+                <p><input class="w3-input w3-padding-16 w3-border" type="email" placeholder="Email" name="email"
+                          required></p>
 
-        <p><button class="w3-button" type="submit">Register</button></p>
-      </form>
+                <p>
+                    <button class="w3-button" type="submit">Register</button>
+                </p>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
+<script src="vendor/jquery/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#loginbtn').on('click', function () {
+            var username = $('#loginname').val();
+            var password = $('#loginpass').val();
+            $.ajax({
+                type: "POST",
+                url: "login",
+                data: {username: username, password: password},
+                success: function (data) {
+                    if(data === "wrongUsername"){
+                        $('#alert').html('').append("Wrong username!").show();
+                    }
+                    if(data === "wrongPassword"){
+                        $('#alert').html('').append("Wrong password").show();
+                    }
+                    if(data === "success"){
+                        $(location).attr('href', "/user");
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
 
 </html>

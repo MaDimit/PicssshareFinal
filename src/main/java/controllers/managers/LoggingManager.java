@@ -119,10 +119,10 @@ public class LoggingManager {
     public User login(String username, String password) throws LoggingException, SQLException {
         User user = UserDao.getInstance().login(username);
         if (user == null) {
-            throw new LoggingException("Wrong username!");
+            throw new LoggingException("username");
         }
         if (!user.getPassword().equals(password)) {
-            throw new LoggingException("Wrong password!");
+            throw new LoggingException("password");
         }
         return user;
     }

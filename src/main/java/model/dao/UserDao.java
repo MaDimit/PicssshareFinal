@@ -199,7 +199,6 @@ public class UserDao extends Dao {
         if(!rs.next()){
             return null;
         }
-        int id = rs.getInt("id");
         User user = createUser(rs);
         stmt.close();
         return user;
@@ -236,8 +235,6 @@ public class UserDao extends Dao {
         String lastname = rs.getString("last_name");
         String email = rs.getString("email");
         String profilePicUrl = rs.getString("profile_picture_url");
-
-        System.out.println("Username = " + username + ", password= " + password + ", firstname: " + firstname + ", lastname: " + lastname + ", email: " + email + ", pic= " + profilePicUrl);
         return new User (id, username, password, firstname, lastname, email, profilePicUrl);
     }
 
