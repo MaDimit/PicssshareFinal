@@ -37,11 +37,11 @@ public class LoggingManager {
         validateUsername(username);
 
         if (!validatePassword(password)) {
-            throw new RegistrationException("Weak password");
+            throw new RegistrationException("weakPass");
         }
 
         if (!validateEmailAddress(email)) {
-            throw new RegistrationException("Email is not valid");
+            throw new RegistrationException("emailNotValid");
         }
 
         //if data is valid user obj is created
@@ -64,13 +64,13 @@ public class LoggingManager {
     // validate username
     public boolean validateUsername(String username) throws RegistrationException, SQLException {
         if (username == null || username.isEmpty()) {
-            throw new RegistrationException("Username can't be empty!");
+            throw new RegistrationException("emptyName");
         }
         if (!username.matches("^[a-zA-Z0-9]+([_ -]?[a-zA-Z0-9])*$")) {
-            throw new RegistrationException("Invalid characters in username!");
+            throw new RegistrationException("nonValidChars");
         }
         if (UserDao.getInstance().checkIfUsernameIsTaken(username)) {
-            throw new RegistrationException("User with this name already exists!");
+            throw new RegistrationException("nameExists");
         }
         return true;
     }
@@ -85,7 +85,7 @@ public class LoggingManager {
      */
     public boolean validatePassword(String password) {
         return (password != null && !password.isEmpty()
-                && password.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$")) ? true : false;
+                && password.matches("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$"));
     }
 
     // validate first name
@@ -105,7 +105,7 @@ public class LoggingManager {
         java.util.regex.Matcher m = p.matcher(email);
 
         if (UserDao.getInstance().checkIfEmailIsTaken(email)) {
-            throw new RegistrationException("User with this email already exists");
+            throw new RegistrationException("emailExists");
         }
 
         return m.matches();

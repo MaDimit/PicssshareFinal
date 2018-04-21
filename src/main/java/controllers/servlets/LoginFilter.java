@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter(filterName = "LoginFilter", urlPatterns = "/*") //TODO "/*" was used in url pattern, but it caused bugs in jquery for some reason
+@WebFilter(filterName = "LoginFilter", urlPatterns = "/jhlkjh*") //TODO "/*" was used in url pattern, but it caused bugs in jquery for some reason
 public class LoginFilter implements Filter {
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {

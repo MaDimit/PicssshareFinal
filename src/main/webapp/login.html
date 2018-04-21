@@ -23,10 +23,10 @@
             background-size: cover;
         }
 
-        .alert{
+        .alert {
             font-size: 30px;
-            color : #e4606d;
-            width : 100%;
+            color: #e4606d;
+            width: 100%;
             text-align: center;
             position: relative;
         }
@@ -67,14 +67,15 @@
         </div>
         <div class="w3-container">
             <p>Login your details</p>
-                <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" id="loginname" name="username"
-                          required></p>
-                <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" id="loginpass"
-                          name="password" required></p>
-                <p>
-                    <button class="w3-button" name="login" id="loginbtn">Login</button>
-                </p>
-            <div class="w3-container alert" style="display: none" id="alert">
+            <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" id="loginname"
+                      name="username"
+                      required></p>
+            <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" id="loginpass"
+                      name="password" required></p>
+            <p>
+                <button class="w3-button" name="login" id="loginbtn">Login</button>
+            </p>
+            <div class="w3-container alert" style="display: none" id="loginalert">
 
             </div>
         </div>
@@ -91,26 +92,28 @@
         </div>
         <div class="w3-container">
             <p>Fill in the fields before get started</p>
-            <form action="register" method="post">
-                <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username"
-                          required></p>
-                <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password"
-                          name="password1" required></p>
-                <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Repeat password"
-                          name="password2" required></p>
-                <p><input class="w3-input w3-padding-16 w3-border" type="email" placeholder="Email" name="email"
-                          required></p>
+            <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username" id="registername"
+                      required></p>
+            <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" id="password1"
+                      name="password1" required></p>
+            <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Repeat password" id="password2"
+                      name="password2" required></p>
+            <p><input class="w3-input w3-padding-16 w3-border" type="email" placeholder="Email" name="email" id="email"
+                      required></p>
 
-                <p>
-                    <button class="w3-button" type="submit">Register</button>
-                </p>
-            </form>
+            <p>
+                <button class="w3-button" name="register" id="registerbtn">Register</button>
+            </p>
+
+            <div class="w3-container alert" style="display: none" id="registeralert"></div>
+
         </div>
     </div>
 </div>
 <script src="vendor/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+        //login reuqest
         $('#loginbtn').on('click', function () {
             var username = $('#loginname').val();
             var password = $('#loginpass').val();
@@ -119,18 +122,66 @@
                 url: "login",
                 data: {username: username, password: password},
                 success: function (data) {
-                    if(data === "wrongUsername"){
-                        $('#alert').html('').append("Wrong username!").show();
+                    if (data === "wrongUsername") {
+                        $('#loginalert').html('').append("Wrong username!").show();
                     }
-                    if(data === "wrongPassword"){
-                        $('#alert').html('').append("Wrong password").show();
+                    if (data === "wrongPassword") {
+                        $('#loginalert').html('').append("Wrong password").show();
                     }
-                    if(data === "success"){
+                    if (data === "success") {
                         $(location).attr('href', "/user");
                     }
                 }
             });
         });
+
+        $('#registerbtn').on('click', function () {
+            var username = $('#registername').val();
+            var password1 = $('#password1').val();
+            var password2 = $('#password2').val();
+            var email = $('#email').val();
+            var json = {username : username, password1 : password1, password2 : password2, email : email};
+            console.log(username + " " + password1 + " " + password2 + " " + email),
+            $.ajax({
+                type: "POST",
+                url : "register",
+                data : JSON.stringify(json),
+                success: function (data) {
+                    var msg;
+                    if (data === "success") {
+                        $(location).attr('href', "/user");
+                        return;
+                    }
+                    else if (data === "passNotMatch") {
+                        msg = "Password doesn't match";
+                    }
+                    else if (data === "emptyName") {
+                        msg = "Empty Username";
+                    }
+                    else if (data === "nonValidChars") {
+                        msg = "Please use valid characters";
+                    }
+                    else if (data ==="nameExists") {
+                        msg = "User with this name already exists";
+                    }
+                    else if (data === "weakPass") {
+                        msg="Weak password";
+                    }
+                    else if (data === "emailExists") {
+                        msg="User with this email already exists";
+                    }
+                    else if (data === "emailNotValid") {
+                        msg="Email is not valid";
+                    }else{
+                        msg = "Something went wrong"
+                    }
+                    $('#registeralert').html('').append(msg).show();
+                },
+                error : function (e) {
+                    alert(e);
+                }
+            })
+        })
     });
 </script>
 </body>
