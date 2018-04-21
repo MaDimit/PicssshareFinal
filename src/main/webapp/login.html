@@ -43,8 +43,8 @@ body, html {height: 100%}
     <div class="w3-container">
       <p>Login your details</p>
       <form action="login" method="POST">
-        <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username"></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" name="password"></p> 	
+        <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username" required></p>
+        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" name="password" required></p>
         <p><button class="w3-button" type="submit">Login</button></p>
       </form>
     </div>
@@ -61,10 +61,10 @@ body, html {height: 100%}
     <div class="w3-container">
       <p>Fill in the fields before get started</p>
       <form action="register" method="post">
-        <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username"></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" name="password1"></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Repeat password" name="password2"></p>
-        <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Email" name="email"></p>
+        <p><input class="w3-input w3-padding-16 w3-border" type="text" placeholder="Username" name="username" required></p>
+        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Password" name="password1" required></p>
+        <p><input class="w3-input w3-padding-16 w3-border" type="password" placeholder="Repeat password" name="password2" required></p>
+        <p><input class="w3-input w3-padding-16 w3-border" type="email" placeholder="Email" name="email" required></p>
         <p><button class="w3-button" type="submit">Register</button></p>
       </form>
     </div>
