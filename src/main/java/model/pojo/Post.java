@@ -1,9 +1,14 @@
 package model.pojo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 
 public class Post implements Comparable<Post> {
 
@@ -128,6 +133,22 @@ public class Post implements Comparable<Post> {
         return comments;
     }
 
+    public JSONArray getCommentsAsJSONArray(){
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < comments.size(); i++) {
+            array.put(comments.get(i).getJSONObject());
+        }
+        return array;
+    }
+
+    public JSONArray getLikersAsJSONArray(){
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < likers.size(); i++) {
+            array.put(likers.get(i).getJSONObject());
+        }
+        return array;
+    }
+
     public List<User> getLikers() {
         return likers;
     }
@@ -158,6 +179,27 @@ public class Post implements Comparable<Post> {
         return Objects.hash(id, date, poster, url);
     }
 
+    public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("postId", id);
+            obj.put("postLikes", likers.size());
+            obj.put("postDislikes", dislikers.size());
+            obj.put("postDate", date);
+            obj.put("postPoster", poster.getJSONObject());
+            obj.put("postPicutreUrl", url);
+
+            obj.put("postTags", tags);
+            obj.put("postComments", getCommentsAsJSONArray());
+            obj.put("postLikers", getLikersAsJSONArray());
+//            obj.put("dislikes", dislikers);
+
+        } catch (JSONException e) {
+
+        }
+        return obj;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -165,7 +207,7 @@ public class Post implements Comparable<Post> {
                 ", likes=" + likers.size() +
                 ", dislikes=" + dislikers.size() +
                 ", date=" + date +
-                ", poster=" + poster +
+                ", poster=" + poster+
                 ", url='" + url + '\'' +
                 ", tags=" + tags +
                 ", comments=" + comments +

@@ -1,5 +1,8 @@
 package model.pojo;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,5 +114,29 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(username);
+    }
+
+    public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("id", id);
+            obj.put("username", username);
+            obj.put("profilePic", profilePicUrl);
+        } catch (JSONException e) {
+
+        }
+        return obj;
+    }
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", profilePicUrl='" + profilePicUrl + '\'' +
+                '}';
     }
 }

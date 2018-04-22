@@ -189,7 +189,6 @@ public class PostDao extends Dao {
         User user = UserDao.getInstance().getUserByID(rs.getInt("poster_id"));
         String url = rs.getString("url");
         LocalDateTime date = rs.getTimestamp("date").toLocalDateTime();
-
         //add all the info for the post
         Post post = new Post(id, user, url, date);
         post.setTags(getAllTagsForPost(post));

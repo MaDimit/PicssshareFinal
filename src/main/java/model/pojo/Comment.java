@@ -1,5 +1,9 @@
 package model.pojo;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,12 +88,37 @@ public class Comment implements Comparable<Comment> {
         return likers.size();
     }
 
+    private JSONArray getLikersAsJSON(){
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < likers.size(); i++) {
+            array.put(likers.get(i).getJSONObject());
+        }
+        return array;
+    }
+
+
+
 
     @Override
     public int compareTo(Comment comment) {
         return this.date.compareTo(comment.date) > 0 ? -1 : 1;
     }
 
+    public JSONObject getJSONObject() {
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("commentId", id);
+            obj.put("commentPoster", user.getJSONObject());
+            obj.put("commentDate", date);
+            obj.put("commentContent", content);
+            obj.put("commentLikers", getLikersAsJSON());
+
+//            obj.put("Category", _category);
+        } catch (JSONException e) {
+
+        }
+        return obj;
+    }
     @Override
     public String toString() {
         return "Comment{" +

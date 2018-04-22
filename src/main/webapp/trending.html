@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+        <html lang="en">
 
-<head>
+        <head>
 
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <meta name="description" content="">
+            <meta name="author" content="">
 
-    <title>Home</title>
+            <title>Trending feed</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+            <!-- Bootstrap core CSS -->
+            <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="css/blog-home.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+            <!-- Custom styles for this template -->
+            <link href="css/blog-home.css" rel="stylesheet">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-    <!--font stylesheet-->
-    <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+            <!--font stylesheet-->
+            <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
 
-</head>
+        </head>
 
-<body onload="loadPosts()">
+<body>
 <input id="username" type="hidden" value="2"></input>
 
 <script>
@@ -50,7 +50,7 @@
 
             <!-- Blog Entries Column -->
             <div class="col-md-8">
-                <h1 class="coolText">Friends feeed
+                <h1 class="coolText">Trending posts
                 </h1>
                 <button onclick="insertNewPost()" id="newp">new post</button>
 
@@ -151,43 +151,43 @@
                 </div>
 
 
-            <!-- Pagination -->
-            <ul class="pagination justify-content-center mb-4">
-                <li class="page-item">
-                    <a class="page-link" href="#">&larr; Older</a>
-                </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#">Newer &rarr;</a>
-                </li>
-            </ul>
+                <!-- Pagination -->
+                <ul class="pagination justify-content-center mb-4">
+                    <li class="page-item">
+                        <a class="page-link" href="#">&larr; Older</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Newer &rarr;</a>
+                    </li>
+                </ul>
 
-        </div>
+            </div>
 
-        <!-- Sidebar Widgets Column -->
-        <div class="col-md-4">
-            <!-- Side Widget -->
-            <div class="card my-4">
-                <h5 class="card-header">Advertisement</h5>
-                <div class="card-body" style="height: 150px">
-                    <i style="alignment: center">Contact us to advertise your product here.</i>
+            <!-- Sidebar Widgets Column -->
+            <div class="col-md-4">
+                <!-- Side Widget -->
+                <div class="card my-4">
+                    <h5 class="card-header">Advertisement</h5>
+                    <div class="card-body" style="height: 150px">
+                        <i style="alignment: center">Contact us to advertise your product here.</i>
+                    </div>
                 </div>
+
             </div>
 
         </div>
+        <!-- /.row -->
 
-    </div>
-    <!-- /.row -->
-
-</div>
-<!-- /.container -->
-
-<!-- Footer -->
-<footer class="py-5 bg-dark">
-    <div class="container">
-        <p class="m-0 text-center text-white">Copyright &copy; Your Website 2018</p>
     </div>
     <!-- /.container -->
-</footer>
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; Your Website 2018</p>
+        </div>
+        <!-- /.container -->
+    </footer>
 </div>
 
 <!-- Bootstrap core JavaScript -->
@@ -202,23 +202,6 @@
 </script>
 
 <script>
-
-    function loadPosts(){
-        var username = document.getElementById('username').value;
-        $.ajax({
-            type: "POST",
-            url : "userfeed",
-            data : {username: username},
-            success: function (data) {
-                data = JSON.stringify(data);
-                console.log(data);
-            },
-            error : function (e) {
-                alert(e);
-            }
-        });
-    }
-
     function insertNewComment() {
         var parent = document.getElementById('newcomment');
         var comment = document.getElementById('commentContext');
@@ -241,46 +224,46 @@
 
     function insertNewPost(){
         var username = document.getElementById('username').value;
-            $.ajax({
-                type: "POST",
-                url : "userfeed",
-                data : {username: username},
-                success: function (data) {
-                    var msg;
-                    if (data === "success") {
-                        console.log("success");
-                        // $(location).attr('href', "/user");
-                        // return;
-                    }
-                    else if (data === "passNotMatch") {
-                        msg = "Password doesn't match";
-                    }
-                    else if (data === "emptyName") {
-                        msg = "Empty Username";
-                    }
-                    else if (data === "nonValidChars") {
-                        msg = "Please use valid characters";
-                    }
-                    else if (data ==="nameExists") {
-                        msg = "User with this name already exists";
-                    }
-                    else if (data === "weakPass") {
-                        msg="Weak password";
-                    }
-                    else if (data === "emailExists") {
-                        msg="User with this email already exists";
-                    }
-                    else if (data === "emailNotValid") {
-                        msg="Email is not valid";
-                    }else{
-                        msg = "Something went wrong"
-                    }
-                    $('#registeralert').html('').append(msg).show();
-                },
-                error : function (e) {
-                    alert(e);
+        $.ajax({
+            type: "POST",
+            url : "userfeed",
+            data : {username: username},
+            success: function (data) {
+                var msg;
+                if (data === "success") {
+                    console.log("success");
+                    // $(location).attr('href', "/user");
+                    // return;
                 }
-            });
+                else if (data === "passNotMatch") {
+                    msg = "Password doesn't match";
+                }
+                else if (data === "emptyName") {
+                    msg = "Empty Username";
+                }
+                else if (data === "nonValidChars") {
+                    msg = "Please use valid characters";
+                }
+                else if (data ==="nameExists") {
+                    msg = "User with this name already exists";
+                }
+                else if (data === "weakPass") {
+                    msg="Weak password";
+                }
+                else if (data === "emailExists") {
+                    msg="User with this email already exists";
+                }
+                else if (data === "emailNotValid") {
+                    msg="Email is not valid";
+                }else{
+                    msg = "Something went wrong"
+                }
+                $('#registeralert').html('').append(msg).show();
+            },
+            error : function (e) {
+                alert(e);
+            }
+        });
         // var i;
         // for(i = 0 ; i<5; i++)
         // {
@@ -423,4 +406,10 @@
 </script>
 </body>
 
+</html>
+</title>
+</head>
+<body>
+
+</body>
 </html>
