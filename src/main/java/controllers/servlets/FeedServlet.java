@@ -17,9 +17,10 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-@WebServlet(name = "FeedServlet", urlPatterns = "/userfeed")
+@WebServlet(name = "FeedServlet", urlPatterns = "/friendsfeed")
 public class FeedServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println(request.getParameter("username"));
         try {
             User u = UserDao.getInstance().getUserByID(Integer.parseInt(request.getParameter("username")));
@@ -35,9 +36,5 @@ public class FeedServlet extends HttpServlet {
 
             response.getWriter().print("success");
         }
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
     }
 }
