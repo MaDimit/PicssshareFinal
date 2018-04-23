@@ -21,39 +21,6 @@ public class Demo {
 
     public static void main(String[] args) throws SQLException, LoggingManager.LoggingException, LoggingManager.RegistrationException {
 
-    class Student{
-        String name;
-        int age;
-        String familyname;
-        Student(String name, int age, String familyname){
-            this.name = name;
-            this.age = age;
-            this.familyname = familyname;
-
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public int getAge() {
-            return age;
-        }
-
-        public String getFamilyname() {
-            return familyname;
-        }
-
-        @Override
-        public String toString() {
-            return "Student{" +
-                    "name='" + name + '\'' +
-                    ", age=" + age +
-                    ", familyname='" + familyname + '\'' +
-                    '}';
-        }
-    }
-
 //        LoggingManager lm = LoggingManager.getInstance();
 //        PostDao pd = PostDao.getInstance();
 //        User user = lm.login("Maxim","Qwerty12345");
